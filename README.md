@@ -7,7 +7,7 @@ sdk: docker
 pinned: false
 ---
 
-# 🚀 Fuel Optimization AI - Sistem Prediksi BBM Cerdas
+# 🚀 Fuel Optimization AI - Sistem Prediksi BBM Cerdas (Live)
 
 ## 📋 Deskripsi
 Sistem prediksi konsumsi bahan bakar (BBM) menggunakan **11+ model Machine Learning** canggih untuk optimasi rute logistik. Aplikasi ini membantu menghemat jutaan rupiah dengan pemilihan rute optimal berdasarkan analisis AI.
