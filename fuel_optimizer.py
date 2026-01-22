@@ -1,32 +1,19 @@
-# -*- coding: utf-8 -*-
 import pandas as pd
 import numpy as np
-import matplotlib
-matplotlib.use('Agg')  # Use non-interactive backend
-import matplotlib.pyplot as plt
-import seaborn as sns
 from sklearn.linear_model import LinearRegression, Ridge, Lasso, ElasticNet
-from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
+from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.preprocessing import StandardScaler, PolynomialFeatures
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor, AdaBoostRegressor, VotingRegressor
 from sklearn.svm import SVR
 from sklearn.neural_network import MLPRegressor
 from sklearn.tree import DecisionTreeRegressor
-import xgboost as xgb
 import warnings
-import plotly.graph_objects as go
-import plotly.express as px
-from plotly.subplots import make_subplots
 import json
 import os
 from datetime import datetime
 
 warnings.filterwarnings('ignore')
-
-# Set style untuk matplotlib
-plt.style.use('default')
-sns.set_palette("husl")
 
 class AdvancedFuelOptimization:
     def __init__(self):
@@ -141,75 +128,8 @@ class AdvancedFuelOptimization:
         return df
 
     def create_visualizations(self, data):
-        """Membuat visualisasi komprehensif"""
-        try:
-            print("\n📊 MEMBUAT VISUALISASI DATA...")
-            
-            # Create output directory
-            os.makedirs('static/plots', exist_ok=True)
-
-            # Plot 1: Distribusi variabel utama
-            fig, axes = plt.subplots(2, 3, figsize=(16, 10))
-            fig.suptitle('Distribusi Data Variabel Utama', fontsize=16, fontweight='bold')
-
-            # Jarak
-            axes[0,0].hist(data['jarak_km'], bins=30, alpha=0.7, color='skyblue', edgecolor='black')
-            axes[0,0].set_title('Distribusi Jarak (km)', fontweight='bold')
-            axes[0,0].set_xlabel('Jarak (km)')
-            axes[0,0].set_ylabel('Frekuensi')
-            axes[0,0].grid(True, alpha=0.3)
-
-            # Waktu
-            axes[0,1].hist(data['waktu_tempuh_menit'], bins=30, alpha=0.7, color='lightgreen', edgecolor='black')
-            axes[0,1].set_title('Distribusi Waktu Tempuh', fontweight='bold')
-            axes[0,1].set_xlabel('Waktu (menit)')
-            axes[0,1].set_ylabel('Frekuensi')
-            axes[0,1].grid(True, alpha=0.3)
-
-            # Konsumsi BBM
-            axes[0,2].hist(data['konsumsi_bbm_liter'], bins=30, alpha=0.7, color='salmon', edgecolor='black')
-            axes[0,2].set_title('Distribusi Konsumsi BBM', fontweight='bold')
-            axes[0,2].set_xlabel('Konsumsi BBM (liter)')
-            axes[0,2].set_ylabel('Frekuensi')
-            axes[0,2].grid(True, alpha=0.3)
-
-            # Scatter plots
-            axes[1,0].scatter(data['jarak_km'], data['konsumsi_bbm_liter'], alpha=0.5, c=data['kepadatan_lalu_lintas'], cmap='viridis')
-            axes[1,0].set_title('Jarak vs Konsumsi BBM', fontweight='bold')
-            axes[1,0].set_xlabel('Jarak (km)')
-            axes[1,0].set_ylabel('Konsumsi BBM (liter)')
-            axes[1,0].grid(True, alpha=0.3)
-
-            axes[1,1].scatter(data['waktu_tempuh_menit'], data['konsumsi_bbm_liter'], alpha=0.5, c=data['kondisi_jalan'], cmap='plasma')
-            axes[1,1].set_title('Waktu vs Konsumsi BBM', fontweight='bold')
-            axes[1,1].set_xlabel('Waktu (menit)')
-            axes[1,1].set_ylabel('Konsumsi BBM (liter)')
-            axes[1,1].grid(True, alpha=0.3)
-
-            # Box plot jenis kendaraan
-            data.boxplot(column='konsumsi_bbm_liter', by='jenis_kendaraan', ax=axes[1,2])
-            axes[1,2].set_title('Konsumsi BBM per Jenis Kendaraan', fontweight='bold')
-            axes[1,2].set_xlabel('Jenis Kendaraan (0=Kecil, 1=Sedang, 2=Besar)')
-            axes[1,2].set_ylabel('Konsumsi BBM (liter)')
-
-            plt.tight_layout()
-            plt.savefig('static/plots/data_distribution.png', dpi=150, bbox_inches='tight')
-            plt.close()
-
-            # Correlation heatmap
-            plt.figure(figsize=(12, 10))
-            numeric_data = data.select_dtypes(include=[np.number])
-            correlation_matrix = numeric_data.corr()
-            sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', center=0, fmt='.2f', square=True)
-            plt.title('Heatmap Korelasi Variabel', fontsize=14, fontweight='bold', pad=20)
-            plt.tight_layout()
-            plt.savefig('static/plots/correlation_heatmap.png', dpi=150, bbox_inches='tight')
-            plt.close()
-
-            print("✅ Visualisasi data berhasil dibuat")
-
-        except Exception as e:
-            print(f"⚠️ Error dalam visualisasi data: {e}")
+        """Visualizations disabled in Lite version"""
+        pass
 
     def train_advanced_models(self, data):
         """Training multiple advanced models dengan hyperparameter tuning"""
@@ -251,24 +171,13 @@ class AdvancedFuelOptimization:
                 'ElasticNet': ElasticNet(alpha=0.1, l1_ratio=0.5),
                 'Decision Tree': DecisionTreeRegressor(max_depth=10, random_state=42),
                 'Random Forest': RandomForestRegressor(
-                    n_estimators=100, 
-                    max_depth=15, 
-                    min_samples_split=5,
-                    min_samples_leaf=2,
+                    n_estimators=50, 
+                    max_depth=10, 
                     random_state=42
                 ),
                 'Gradient Boosting': GradientBoostingRegressor(
-                    n_estimators=100, 
+                    n_estimators=50, 
                     max_depth=5,
-                    learning_rate=0.1,
-                    random_state=42
-                ),
-                'XGBoost': xgb.XGBRegressor(
-                    n_estimators=100,
-                    max_depth=6,
-                    learning_rate=0.1,
-                    subsample=0.8,
-                    colsample_bytree=0.8,
                     random_state=42
                 ),
                 'AdaBoost': AdaBoostRegressor(
@@ -277,9 +186,7 @@ class AdvancedFuelOptimization:
                     random_state=42
                 ),
                 'Neural Network': MLPRegressor(
-                    hidden_layer_sizes=(100, 50, 25),
-                    activation='relu',
-                    solver='adam',
+                    hidden_layer_sizes=(64, 32),
                     max_iter=500,
                     random_state=42,
                     early_stopping=True
@@ -368,13 +275,15 @@ class AdvancedFuelOptimization:
 
             print(f"\n🎉 MODEL TERBAIK: {self.best_model_name} (R² = {self.best_score:.4f})")
 
+            self.models = results
+            self.feature_columns = feature_cols
+            self.X_test = X_test
+            self.y_test = y_test
+
+            print(f"\n🎉 MODEL TERBAIK: {self.best_model_name} (R² = {self.best_score:.4f})")
+
             # Create ensemble model from top 3 models
             self.create_ensemble_model(results, X_train, y_train, X_test, y_test)
-
-            # Plot comparisons
-            self.plot_model_comparison(results)
-            self.plot_predictions(results)
-            self.plot_feature_importance()
 
             return results
 
@@ -433,121 +342,13 @@ class AdvancedFuelOptimization:
             print(f"⚠️ Error creating ensemble: {e}")
 
     def plot_model_comparison(self, results):
-        """Plot perbandingan model"""
-        try:
-            models = list(results.keys())
-            r2_scores = [results[model]['r2'] for model in models]
-            mae_scores = [results[model]['mae'] for model in models]
-
-            fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 6))
-            
-            # R² scores
-            colors = ['#FF6B6B' if score < 0.7 else '#4ECDC4' if score < 0.9 else '#96CEB4' 
-                     for score in r2_scores]
-            bars1 = ax1.bar(range(len(models)), r2_scores, color=colors, alpha=0.8)
-            ax1.axhline(y=0.8, color='green', linestyle='--', linewidth=2, label='Target R² = 0.8')
-            ax1.set_ylabel('R² Score', fontsize=12, fontweight='bold')
-            ax1.set_title('Perbandingan R² Score Model', fontsize=14, fontweight='bold')
-            ax1.set_xticks(range(len(models)))
-            ax1.set_xticklabels(models, rotation=45, ha='right')
-            ax1.legend()
-            ax1.grid(True, alpha=0.3)
-
-            for bar, score in zip(bars1, r2_scores):
-                height = bar.get_height()
-                ax1.text(bar.get_x() + bar.get_width()/2, height + 0.01,
-                        f'{score:.3f}', ha='center', va='bottom', fontweight='bold', fontsize=9)
-
-            # MAE scores
-            bars2 = ax2.bar(range(len(models)), mae_scores, color='#FFB6C1', alpha=0.8)
-            ax2.set_ylabel('MAE (Lower is Better)', fontsize=12, fontweight='bold')
-            ax2.set_title('Perbandingan MAE Model', fontsize=14, fontweight='bold')
-            ax2.set_xticks(range(len(models)))
-            ax2.set_xticklabels(models, rotation=45, ha='right')
-            ax2.grid(True, alpha=0.3)
-
-            for bar, score in zip(bars2, mae_scores):
-                height = bar.get_height()
-                ax2.text(bar.get_x() + bar.get_width()/2, height + 0.5,
-                        f'{score:.1f}', ha='center', va='bottom', fontweight='bold', fontsize=9)
-
-            plt.tight_layout()
-            plt.savefig('static/plots/model_comparison.png', dpi=150, bbox_inches='tight')
-            plt.close()
-
-            print("✅ Grafik perbandingan model berhasil dibuat")
-
-        except Exception as e:
-            print(f"⚠️ Error plotting model comparison: {e}")
+        pass
 
     def plot_predictions(self, results):
-        """Plot actual vs predicted values for best models"""
-        try:
-            # Get top 4 models
-            sorted_models = sorted(results.items(), key=lambda x: x[1]['r2'], reverse=True)[:4]
-            
-            fig, axes = plt.subplots(2, 2, figsize=(14, 12))
-            axes = axes.flatten()
-            
-            for idx, (name, model_info) in enumerate(sorted_models):
-                ax = axes[idx]
-                y_pred = model_info['predictions']
-                
-                ax.scatter(self.y_test, y_pred, alpha=0.6, s=30)
-                ax.plot([self.y_test.min(), self.y_test.max()], 
-                       [self.y_test.min(), self.y_test.max()], 
-                       'r--', lw=2, label='Perfect Prediction')
-                
-                ax.set_xlabel('Actual BBM (liter)', fontweight='bold')
-                ax.set_ylabel('Predicted BBM (liter)', fontweight='bold')
-                ax.set_title(f'{name}\nR² = {model_info["r2"]:.4f}', fontweight='bold')
-                ax.legend()
-                ax.grid(True, alpha=0.3)
-            
-            plt.tight_layout()
-            plt.savefig('static/plots/predictions_comparison.png', dpi=150, bbox_inches='tight')
-            plt.close()
-            
-            print("✅ Grafik prediksi vs aktual berhasil dibuat")
-            
-        except Exception as e:
-            print(f"⚠️ Error plotting predictions: {e}")
+        pass
 
     def plot_feature_importance(self):
-        """Plot feature importance for tree-based models"""
-        try:
-            if not self.feature_importance:
-                return
-            
-            # Get the best tree-based model with feature importance
-            best_importance_model = None
-            for name, df in self.feature_importance.items():
-                if name == self.best_model_name:
-                    best_importance_model = name
-                    break
-            
-            if not best_importance_model and self.feature_importance:
-                best_importance_model = list(self.feature_importance.keys())[0]
-            
-            if best_importance_model:
-                df = self.feature_importance[best_importance_model].head(15)
-                
-                plt.figure(figsize=(10, 8))
-                plt.barh(range(len(df)), df['importance'], color='teal', alpha=0.7)
-                plt.yticks(range(len(df)), df['feature'])
-                plt.xlabel('Importance Score', fontweight='bold')
-                plt.title(f'Top 15 Feature Importance - {best_importance_model}', 
-                         fontsize=14, fontweight='bold', pad=20)
-                plt.gca().invert_yaxis()
-                plt.grid(True, alpha=0.3, axis='x')
-                plt.tight_layout()
-                plt.savefig('static/plots/feature_importance.png', dpi=150, bbox_inches='tight')
-                plt.close()
-                
-                print(f"✅ Grafik feature importance berhasil dibuat untuk {best_importance_model}")
-        
-        except Exception as e:
-            print(f"⚠️ Error plotting feature importance: {e}")
+        pass
 
     def predict_route_consumption(self, route_features):
         """Prediksi konsumsi BBM untuk rute"""
@@ -720,84 +521,7 @@ class AdvancedFuelOptimization:
             json.dump(self.savings_data, f, indent=2)
 
     def create_route_visualizations(self, results_df):
-        """Membuat visualisasi perbandingan rute"""
-        try:
-            fig = plt.figure(figsize=(16, 12))
-            
-            # Layout grid
-            gs = fig.add_gridspec(3, 3, hspace=0.3, wspace=0.3)
-            
-            routes = results_df['rute']
-            
-            # 1. Konsumsi BBM
-            ax1 = fig.add_subplot(gs[0, 0])
-            bars = ax1.bar(routes, results_df['prediksi_bbm_liter'], color='coral', alpha=0.7)
-            ax1.set_title('Konsumsi BBM per Rute', fontweight='bold', fontsize=12)
-            ax1.set_ylabel('BBM (liter)')
-            ax1.tick_params(axis='x', rotation=45)
-            for bar in bars:
-                height = bar.get_height()
-                ax1.text(bar.get_x() + bar.get_width()/2, height,
-                        f'{height:.1f}L', ha='center', va='bottom', fontsize=9)
-            
-            # 2. Efisiensi
-            ax2 = fig.add_subplot(gs[0, 1])
-            bars = ax2.bar(routes, results_df['efisiensi_km_per_liter'], color='lightgreen', alpha=0.7)
-            ax2.set_title('Efisiensi BBM per Rute', fontweight='bold', fontsize=12)
-            ax2.set_ylabel('Efisiensi (km/L)')
-            ax2.tick_params(axis='x', rotation=45)
-            for bar in bars:
-                height = bar.get_height()
-                ax2.text(bar.get_x() + bar.get_width()/2, height,
-                        f'{height:.1f}', ha='center', va='bottom', fontsize=9)
-            
-            # 3. Total Biaya
-            ax3 = fig.add_subplot(gs[0, 2])
-            bars = ax3.bar(routes, results_df['total_biaya_rp']/1000, color='skyblue', alpha=0.7)
-            ax3.set_title('Total Biaya per Rute', fontweight='bold', fontsize=12)
-            ax3.set_ylabel('Biaya (Ribu Rp)')
-            ax3.tick_params(axis='x', rotation=45)
-            for bar in bars:
-                height = bar.get_height()
-                ax3.text(bar.get_x() + bar.get_width()/2, height,
-                        f'{height:.0f}K', ha='center', va='bottom', fontsize=9)
-            
-            # 4. Waktu Tempuh
-            ax4 = fig.add_subplot(gs[1, 0])
-            bars = ax4.bar(routes, results_df['waktu_menit'], color='plum', alpha=0.7)
-            ax4.set_title('Waktu Tempuh per Rute', fontweight='bold', fontsize=12)
-            ax4.set_ylabel('Waktu (menit)')
-            ax4.tick_params(axis='x', rotation=45)
-            for bar in bars:
-                height = bar.get_height()
-                ax4.text(bar.get_x() + bar.get_width()/2, height,
-                        f'{int(height)}m', ha='center', va='bottom', fontsize=9)
-            
-            # 5. Skor Efisiensi
-            ax5 = fig.add_subplot(gs[1, 1])
-            colors = plt.cm.RdYlGn(np.linspace(0.3, 0.9, len(routes)))
-            bars = ax5.bar(routes, results_df['skor_efisiensi'], color=colors, alpha=0.8)
-            ax5.set_title('Skor Efisiensi Total', fontweight='bold', fontsize=12)
-            ax5.set_ylabel('Skor')
-            ax5.tick_params(axis='x', rotation=45)
-            for bar in bars:
-                height = bar.get_height()
-                ax5.text(bar.get_x() + bar.get_width()/2, height,
-                        f'{int(height)}', ha='center', va='bottom', fontsize=9)
-            
-            # 6. Comparison: Jarak vs BBM
-            ax6 = fig.add_subplot(gs[1, 2])
-            ax6.scatter(results_df['jarak_km'], results_df['prediksi_bbm_liter'], 
-                       s=200, c=results_df['kepadatan'], cmap='viridis', alpha=0.7)
-            for idx, row in results_df.iterrows():
-                ax6.annotate(row['rute'], (row['jarak_km'], row['prediksi_bbm_liter']),
-                           fontsize=8, ha='center')
-            ax6.set_xlabel('Jarak (km)', fontweight='bold')
-            ax6.set_ylabel('Konsumsi BBM (liter)', fontweight='bold')
-            ax6.set_title('Jarak vs Konsumsi BBM', fontweight='bold', fontsize=12)
-            ax6.grid(True, alpha=0.3)
-            
-            # 7. Route Details - Best Route
+        pass
             ax7 = fig.add_subplot(gs[2, :])
             ax7.axis('off')
             

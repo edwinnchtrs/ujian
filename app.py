@@ -174,10 +174,7 @@ def analyze_routes():
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
-@app.route('/plots/<path:filename>')
-def serve_plot(filename):
-    """Serve plot images"""
-    return send_from_directory('static/plots', filename)
+# Plots serving disabled in Lite version
 
 @app.route('/api/retrain', methods=['POST'])
 def retrain_model():
