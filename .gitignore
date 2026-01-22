@@ -42,6 +42,14 @@ instance/
 .env
 .env.local
 
+# Secrets & Tokens (NEVER commit!)
+*_TOKEN
+*token*.txt
+*.key
+secrets/
+
+# Deployment - See DEPLOYMENT.md for GitHub Actions setup
+
 # IDE
 .vscode/
 .idea/
