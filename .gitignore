@@ -32,8 +32,8 @@ instance/
 .webassets-cache
 
 # Model files
-model.pkl
-*.pkl
+# model.pkl
+# *.pkl
 
 # Jupyter Notebook
 .ipynb_checkpoints

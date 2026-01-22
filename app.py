@@ -32,18 +32,8 @@ def initialize_system():
                 fuel_system = pickle.load(f)
             print(f"✓ Model loaded: {fuel_system.best_model_name}")
         else:
-            print("No existing model found. Training new model...")
+            print("No existing model found. Using basic system (training disabled on server)...")
             fuel_system = AdvancedFuelOptimization()
-            data = fuel_system.create_realistic_sample_data(n_samples=500)
-            results = fuel_system.train_advanced_models(data)
-            
-            if results:
-                # Save model
-                with open('model.pkl', 'wb') as f:
-                    pickle.dump(fuel_system, f)
-                print(f"✓ New model trained and saved: {fuel_system.best_model_name}")
-            else:
-                print("✗ Model training failed")
                 
     except Exception as e:
         print(f"Error initializing system: {e}")
