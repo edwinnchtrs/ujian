@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Data - Fuel Optimization AI</title>
+    <meta name="description" content="Upload file Excel atau CSV untuk prediksi batch konsumsi BBM">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .optimal-route-card {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 1rem;
+            padding: 2px;
+            /* For border effect if needed */
+            color: white;
+            position: relative;
+            box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4);
+            overflow: hidden;
+        }
+
+        .optimal-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            padding: 0.5rem 1rem;
+            border-bottom-left-radius: 1rem;
+            font-weight: 700;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .optimal-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 1rem;
+        }
+
+        .optimal-main {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 1.5rem;
+        }
+
+        .optimal-icon {
+            width: 70px;
+            height: 70px;
+            background: white;
+            color: #10b981;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .optimal-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .optimal-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .optimal-sub {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        .optimal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .optimal-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 0.75rem;
+            transition: transform 0.2s;
+        }
+
+        .optimal-item:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .optimal-item i {
+            font-size: 1.5rem;
+            opacity: 0.9;
+        }
+
+        .optimal-item span {
+            display: block;
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin-bottom: 0.2rem;
+        }
+
+        .optimal-item strong {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-animation">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <i class="fas fa-brain"></i>
+                <span>Fuel<span class="highlight">AI</span></span>
+            </div>
+            <div class="nav-links">
+                <a href="/"><i class="fas fa-home"></i> Beranda</a>
+                <a href="/dashboard"><i class="fas fa-chart-line"></i> Dashboard</a>
+                <a href="/analyze"><i class="fas fa-route"></i> Analisis</a>
+                <a href="/tips"><i class="fas fa-lightbulb"></i> Tips</a>
+                <a href="/upload" class="active"><i class="fas fa-upload"></i> Upload</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Upload Header -->
+    <section class="dashboard-header">
+        <div class="container">
+            <h1><i class="fas fa-upload"></i> Upload Data Rute</h1>
+            <p>Upload file Excel atau CSV untuk prediksi konsumsi BBM batch</p>
+        </div>
+    </section>
+
+    <!-- Upload Content -->
+    <div class="upload-container">
+        <div class="container">
+            <div class="upload-grid">
+                <!-- Upload Section -->
+                <div class="upload-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-cloud-upload-alt"></i> Upload File</h2>
+                            <p>Drag & drop atau klik untuk memilih file</p>
+                        </div>
+                        <div class="card-body">
+                            <div class="upload-area" id="uploadArea">
+                                <div class="upload-icon">
+                                    <i class="fas fa-file-excel"></i>
+                                </div>
+                                <h3>Drag & Drop File Di Sini</h3>
+                                <p>atau</p>
+                                <input type="file" id="fileInput" accept=".csv,.xlsx,.xls" style="display: none;">
+                                <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+                                    <i class="fas fa-folder-open"></i> Pilih File
+                                </button>
+                                <p class="upload-note">Format: CSV, Excel (.xlsx, .xls) | Max: 10MB</p>
+                            </div>
+
+                            <div id="filePreview" class="file-preview" style="display: none;">
+                                <div class="file-info">
+                                    <i class="fas fa-file-check"></i>
+                                    <div class="file-details">
+                                        <div class="file-name" id="fileName">-</div>
+                                        <div class="file-size" id="fileSize">-</div>
+                                    </div>
+                                    <button class="btn-remove" onclick="removeFile()">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                                <button class="btn btn-primary btn-block" onclick="processFile()">
+                                    <i class="fas fa-cog"></i> Proses File
+                                </button>
+                            </div>
+
+                            <div id="processingState" class="processing-state" style="display: none;">
+                                <div class="loader"></div>
+                                <p>Memproses file... <span id="progressText">0%</span></p>
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar-fill" id="progressBar"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Format Guide -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-info-circle"></i> Format File</h3>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>File harus memiliki kolom berikut:</strong></p>
+                            <div class="format-list">
+                                <div class="format-item">
+                                    <i class="fas fa-check"></i>
+                                    <span><strong>jarak_km</strong> - Jarak tempuh dalam kilometer</span>
+                                </div>
+                                <div class="format-item">
+                                    <i class="fas fa-check"></i>
+                                    <span><strong>waktu_tempuh_menit</strong> - Waktu tempuh dalam menit</span>
+                                </div>
+                                <div class="format-item">
+                                    <i class="fas fa-check"></i>
+                                    <span><strong>kepadatan_lalu_lintas</strong> - Skala 1-10</span>
+                                </div>
+                                <div class="format-item">
+                                    <i class="fas fa-check"></i>
+                                    <span><strong>kondisi_jalan</strong> - Skala 1-5</span>
+                                </div>
+                                <div class="format-item">
+                                    <i class="fas fa-check"></i>
+                                    <span><strong>kondisi_cuaca</strong> - 0=Hujan, 1=Mendung, 2=Cerah, 3=Panas</span>
+                                </div>
+                                <div class="format-item">
+                                    <i class="fas fa-check"></i>
+                                    <span><strong>jenis_kendaraan</strong> - 0=Kecil, 1=Sedang, 2=Besar</span>
+                                </div>
+                                <div class="format-item">
+                                    <i class="fas fa-check"></i>
+                                    <span><strong>berat_muatan_ton</strong> - Berat muatan dalam ton</span>
+                                </div>
+                            </div>
+
+                            <a href="/api/download-template" class="btn btn-secondary btn-block" download>
+                                <i class="fas fa-download"></i> Download Template
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results Section -->
+                <div class="results-section">
+                    <div id="resultsCard" class="card" style="display: none;">
+                        <div class="card-header">
+                            <h2><i class="fas fa-chart-bar"></i> Hasil Prediksi</h2>
+                            <button class="btn btn-secondary btn-sm" onclick="downloadResults()">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div id="optimalRouteSection" class="optimal-route-card"
+                                style="display: none; margin-bottom: 2rem;">
+                                <div class="optimal-badge">
+                                    <i class="fas fa-crown"></i> Rute Paling Optimal
+                                </div>
+                                <div class="optimal-content">
+                                    <div class="optimal-main">
+                                        <div class="optimal-icon">
+                                            <i class="fas fa-check-circle"></i>
+                                        </div>
+                                        <div>
+                                            <div class="optimal-label">Total Biaya Terendah</div>
+                                            <div class="optimal-value" id="optCost">Rp 0</div>
+                                            <div class="optimal-sub" id="optRouteId">Rute #0</div>
+                                        </div>
+                                    </div>
+                                    <div class="optimal-grid">
+                                        <div class="optimal-item">
+                                            <i class="fas fa-gas-pump"></i>
+                                            <div>
+                                                <span>Konsumsi BBM</span>
+                                                <strong id="optFuel">0 L</strong>
+                                            </div>
+                                        </div>
+                                        <div class="optimal-item">
+                                            <i class="fas fa-tachometer-alt"></i>
+                                            <div>
+                                                <span>Efisiensi</span>
+                                                <strong id="optEfficiency">0 km/L</strong>
+                                            </div>
+                                        </div>
+                                        <div class="optimal-item">
+                                            <i class="fas fa-road"></i>
+                                            <div>
+                                                <span>Jarak Tempuh</span>
+                                                <strong id="optDistance">0 km</strong>
+                                            </div>
+                                        </div>
+                                        <div class="optimal-item">
+                                            <i class="fas fa-clock"></i>
+                                            <div>
+                                                <span>Waktu Tempuh</span>
+                                                <strong id="optTime">0 menit</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="results-summary">
+                                <div class="summary-card">
+                                    <div class="summary-icon"><i class="fas fa-list"></i></div>
+                                    <div class="summary-value" id="totalRoutes">0</div>
+                                    <div class="summary-label">Total Rute</div>
+                                </div>
+                                <div class="summary-card">
+                                    <div class="summary-icon"><i class="fas fa-gas-pump"></i></div>
+                                    <div class="summary-value" id="totalFuel">0 L</div>
+                                    <div class="summary-label">Total BBM</div>
+                                </div>
+                                <div class="summary-card">
+                                    <div class="summary-icon"><i class="fas fa-money-bill-wave"></i></div>
+                                    <div class="summary-value" id="totalCost">Rp 0</div>
+                                    <div class="summary-label">Total Biaya</div>
+                                </div>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table id="resultsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Jarak (km)</th>
+                                            <th>Waktu (mnt)</th>
+                                            <th>Prediksi BBM (L)</th>
+                                            <th>Efisiensi (km/L)</th>
+                                            <th>Biaya (Rp)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="resultsTableBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Example Data Card -->
+                    <div class="card example-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-table"></i> Contoh Data</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="example-table">
+                                    <thead>
+                                        <tr>
+                                            <th>jarak_km</th>
+                                            <th>waktu_tempuh_menit</th>
+                                            <th>kepadatan_lalu_lintas</th>
+                                            <th>kondisi_jalan</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>150</td>
+                                            <td>180</td>
+                                            <td>5</td>
+                                            <td>4</td>
+                                        </tr>
+                                        <tr>
+                                            <td>200</td>
+                                            <td>220</td>
+                                            <td>7</td>
+                                            <td>3</td>
+                                        </tr>
+                                        <tr>
+                                            <td>120</td>
+                                            <td>150</td>
+                                            <td>3</td>
+                                            <td>5</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="example-note">
+                                <i class="fas fa-lightbulb"></i>
+                                Anda bisa menggunakan format seperti di atas untuk file CSV atau Excel Anda
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3><i class="fas fa-brain"></i> Fuel<span class="highlight">AI</span></h3>
+                    <p>Optimasi BBM dengan Artificial Intelligence</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 FuelAI. Built with ❤️ using Python & Flask</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let uploadedFile = null;
+        let resultsData = null;
+
+        // Drag and drop
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        function handleFile(file) {
+            // Validate file type
+            const validTypes = ['text/csv', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+            if (!validTypes.includes(file.type) && !file.name.match(/\.(csv|xlsx|xls)$/)) {
+                alert('Format file tidak valid. Gunakan CSV atau Excel.');
+                return;
+            }
+
+            // Validate file size (10MB)
+            if (file.size > 10 * 1024 * 1024) {
+                alert('File terlalu besar. Maksimal 10MB.');
+                return;
+            }
+
+            uploadedFile = file;
+
+            // Show file preview
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('fileSize').textContent = formatFileSize(file.size);
+            document.getElementById('uploadArea').style.display = 'none';
+            document.getElementById('filePreview').style.display = 'block';
+        }
+
+        function removeFile() {
+            uploadedFile = null;
+            document.getElementById('uploadArea').style.display = 'block';
+            document.getElementById('filePreview').style.display = 'none';
+            fileInput.value = '';
+        }
+
+        async function processFile() {
+            if (!uploadedFile) return;
+
+            document.getElementById('filePreview').style.display = 'none';
+            document.getElementById('processingState').style.display = 'block';
+
+            const formData = new FormData();
+            formData.append('file', uploadedFile);
+
+            try {
+                // Simulate progress
+                let progress = 0;
+                const progressInterval = setInterval(() => {
+                    progress += 10;
+                    if (progress <= 90) {
+                        document.getElementById('progressBar').style.width = progress + '%';
+                        document.getElementById('progressText').textContent = progress + '%';
+                    }
+                }, 200);
+
+                const response = await fetch('/api/upload-predict', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                clearInterval(progressInterval);
+                document.getElementById('progressBar').style.width = '100%';
+                document.getElementById('progressText').textContent = '100%';
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Error processing file');
+                }
+
+                const data = await response.json();
+
+                setTimeout(() => {
+                    document.getElementById('processingState').style.display = 'none';
+                    displayResults(data);
+                }, 500);
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan: ' + error.message);
+                document.getElementById('processingState').style.display = 'none';
+                document.getElementById('filePreview').style.display = 'block';
+            }
+        }
+
+        function displayResults(data) {
+            resultsData = data;
+
+            // Find best route (lowest total cost)
+            let bestRoute = data.results[0];
+            let bestIndex = 0;
+
+            data.results.forEach((result, index) => {
+                if (result.total_biaya_rp < bestRoute.total_biaya_rp) {
+                    bestRoute = result;
+                    bestIndex = index;
+                }
+            });
+
+            // Populate Optimal Route Card
+            if (bestRoute) {
+                document.getElementById('optimalRouteSection').style.display = 'block';
+                document.getElementById('optCost').textContent = 'Rp ' + bestRoute.total_biaya_rp.toLocaleString('id-ID');
+                document.getElementById('optRouteId').textContent = `Rute #${bestIndex + 1} • ${bestRoute.jarak_km} km`;
+                document.getElementById('optFuel').textContent = bestRoute.prediksi_bbm_liter.toFixed(2) + ' L';
+                document.getElementById('optEfficiency').textContent = bestRoute.efisiensi_km_per_liter.toFixed(2) + ' km/L';
+                document.getElementById('optDistance').textContent = bestRoute.jarak_km + ' km';
+                document.getElementById('optTime').textContent = bestRoute.waktu_menit + ' menit';
+            }
+
+            // Update summary
+            document.getElementById('totalRoutes').textContent = data.results.length;
+
+            const totalFuel = data.results.reduce((sum, r) => sum + r.prediksi_bbm_liter, 0);
+            document.getElementById('totalFuel').textContent = totalFuel.toFixed(1) + ' L';
+
+            const totalCost = data.results.reduce((sum, r) => sum + r.total_biaya_rp, 0);
+            document.getElementById('totalCost').textContent = 'Rp ' + totalCost.toLocaleString('id-ID');
+
+            // Populate table
+            const tbody = document.getElementById('resultsTableBody');
+            tbody.innerHTML = '';
+
+            data.results.forEach((result, index) => {
+                const isBest = index === bestIndex;
+                const row = tbody.insertRow();
+                if (isBest) {
+                    row.style.background = 'rgba(16, 185, 129, 0.1)';
+                    row.style.fontWeight = 'bold';
+                }
+
+                row.innerHTML = `
+                    <td>${index + 1} ${isBest ? '<i class="fas fa-crown text-success" style="color: #10b981; margin-left: 5px;"></i>' : ''}</td>
+                    <td>${result.jarak_km}</td>
+                    <td>${result.waktu_menit}</td>
+                    <td>${result.prediksi_bbm_liter.toFixed(1)}</td>
+                    <td>${result.efisiensi_km_per_liter.toFixed(2)}</td>
+                    <td>Rp ${result.total_biaya_rp.toLocaleString('id-ID')}</td>
+                `;
+            });
+
+            document.getElementById('resultsCard').style.display = 'block';
+            document.getElementById('resultsCard').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function downloadResults() {
+            if (!resultsData) return;
+
+            // Convert to CSV
+            const headers = ['No', 'Jarak (km)', 'Waktu (menit)', 'Prediksi BBM (L)', 'Efisiensi (km/L)', 'Biaya BBM (Rp)', 'Total Biaya (Rp)'];
+            const rows = resultsData.results.map((r, i) => [
+                i + 1,
+                r.jarak_km,
+                r.waktu_menit,
+                r.prediksi_bbm_liter.toFixed(2),
+                r.efisiensi_km_per_liter.toFixed(2),
+                r.biaya_bbm_rp.toFixed(0),
+                r.total_biaya_rp.toFixed(0)
+            ]);
+
+            let csvContent = headers.join(',') + '\n';
+            csvContent += rows.map(row => row.join(',')).join('\n');
+
+            // Download
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'fuel_prediction_results.csv';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+        }
+    </script>
+</body>
+
+</html>

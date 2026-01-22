@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fuel Optimization AI - Sistem Prediksi BBM Cerdas</title>
+    <meta name="description"
+        content="Sistem AI untuk optimasi konsumsi BBM dan prediksi rute terbaik menggunakan Machine Learning">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+</head>
+
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <i class="fas fa-brain"></i>
+                <span>Fuel<span class="highlight">AI</span></span>
+            </div>
+            <div class="nav-links">
+                <a href="/" class="active"><i class="fas fa-home"></i> Beranda</a>
+                <a href="/dashboard"><i class="fas fa-chart-line"></i> Dashboard</a>
+                <a href="/analyze"><i class="fas fa-route"></i> Analisis</a>
+                <a href="/tips"><i class="fas fa-lightbulb"></i> Tips</a>
+                <a href="/upload"><i class="fas fa-upload"></i> Upload</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1 class="hero-title">
+                        <span class="gradient-text">Optimasi BBM</span><br>
+                        Dengan Kekuatan AI
+                    </h1>
+                    <p class="hero-subtitle">
+                        Prediksi konsumsi bahan bakar yang akurat menggunakan 11+ model Machine Learning canggih.
+                        Hemat jutaan rupiah dengan pemilihan rute optimal.
+                    </p>
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <div class="stat-value" id="accuracy-stat">95%</div>
+                            <div class="stat-label">Akurasi Model</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="routes-stat">1000+</div>
+                            <div class="stat-label">Rute Dianalisis</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="savings-stat">30%</div>
+                            <div class="stat-label">Penghematan Avg</div>
+                        </div>
+                    </div>
+                    <div class="hero-buttons">
+                        <a href="/analyze" class="btn btn-primary">
+                            <i class="fas fa-rocket"></i> Mulai Analisis
+                        </a>
+                        <a href="/dashboard" class="btn btn-secondary">
+                            <i class="fas fa-chart-bar"></i> Lihat Dashboard
+                        </a>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="visual-card">
+                        <div class="visual-header">
+                            <i class="fas fa-microchip"></i>
+                            <span>AI Model Active</span>
+                        </div>
+                        <div class="model-list">
+                            <div class="model-item">
+                                <span>XGBoost</span>
+                                <div class="progress-bar">
+                                    <div class="progress" style="width: 95%"></div>
+                                </div>
+                            </div>
+                            <div class="model-item">
+                                <span>Neural Network</span>
+                                <div class="progress-bar">
+                                    <div class="progress" style="width: 92%"></div>
+                                </div>
+                            </div>
+                            <div class="model-item">
+                                <span>Random Forest</span>
+                                <div class="progress-bar">
+                                    <div class="progress" style="width: 89%"></div>
+                                </div>
+                            </div>
+                            <div class="model-item">
+                                <span>Gradient Boosting</span>
+                                <div class="progress-bar">
+                                    <div class="progress" style="width: 91%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-pulse"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">Fitur Unggulan</h2>
+            <p class="section-subtitle">Teknologi canggih untuk optimasi logistik Anda</p>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>11+ Model ML</h3>
+                    <p>XGBoost, Neural Networks, Random Forest, Gradient Boosting, dan lebih banyak model canggih untuk
+                        prediksi akurat</p>
+                    <div class="feature-badge">Advanced AI</div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Analisis Real-time</h3>
+                    <p>Prediksi konsumsi BBM instant dengan visualisasi interaktif dan detail perbandingan rute</p>
+                    <div class="feature-badge">Lightning Fast</div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <h3>Perhitungan ROI</h3>
+                    <p>Proyeksi penghematan harian, bulanan, dan tahunan dengan detail breakdown biaya operasional</p>
+                    <div class="feature-badge">Smart Finance</div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-route"></i>
+                    </div>
+                    <h3>Optimasi Rute</h3>
+                    <p>Rekomendasi rute terbaik berdasarkan jarak, waktu, kondisi lalu lintas, cuaca, dan tipe kendaraan
+                    </p>
+                    <div class="feature-badge">Smart Routing</div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h3>Feature Engineering</h3>
+                    <p>20+ fitur terekayasa untuk meningkatkan akurasi prediksi termasuk interaksi non-linear</p>
+                    <div class="feature-badge">Deep Learning</div>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <h3>Visualisasi Canggih</h3>
+                    <p>Dashboard interaktif dengan grafik, heatmap, dan analisis komparatif yang mudah dipahami</p>
+                    <div class="feature-badge">Beautiful UI</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works">
+        <div class="container">
+            <h2 class="section-title">Cara Kerja Sistem</h2>
+            <p class="section-subtitle">Proses analisis dalam 4 langkah sederhana</p>
+
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3><i class="fas fa-database"></i> Input Data Rute</h3>
+                        <p>Masukkan detail rute: jarak, waktu, kondisi lalu lintas, jalan, cuaca, dan tipe kendaraan</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3><i class="fas fa-microchip"></i> Proses AI</h3>
+                        <p>Model ML menganalisis data dengan 11+ algoritma dan feature engineering kompleks</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3><i class="fas fa-calculator"></i> Prediksi & Analisis</h3>
+                        <p>Sistem memprediksi konsumsi BBM, biaya, efisiensi, dan memberikan skor untuk setiap rute</p>
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3><i class="fas fa-trophy"></i> Rekomendasi</h3>
+                        <p>Dapatkan rekomendasi rute terbaik dengan proyeksi penghematan tahunan</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Stack -->
+    <section class="tech-stack">
+        <div class="container">
+            <h2 class="section-title">Teknologi Terdepan</h2>
+            <p class="section-subtitle">Didukung oleh library dan framework terbaik</p>
+
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <i class="fab fa-python"></i>
+                    <span>Python</span>
+                </div>
+                <div class="tech-item">
+                    <i class="fas fa-brain"></i>
+                    <span>Scikit-Learn</span>
+                </div>
+                <div class="tech-item">
+                    <i class="fas fa-project-diagram"></i>
+                    <span>XGBoost</span>
+                </div>
+                <div class="tech-item">
+                    <i class="fas fa-network-wired"></i>
+                    <span>Neural Networks</span>
+                </div>
+                <div class="tech-item">
+                    <i class="fas fa-chart-area"></i>
+                    <span>Plotly</span>
+                </div>
+                <div class="tech-item">
+                    <i class="fas fa-server"></i>
+                    <span>Flask</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Siap Menghemat Jutaan Rupiah?</h2>
+                <p>Mulai optimasi rute logistik Anda sekarang dengan teknologi AI terdepan</p>
+                <a href="/analyze" class="btn btn-large">
+                    <i class="fas fa-rocket"></i> Mulai Sekarang - Gratis
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3><i class="fas fa-brain"></i> Fuel<span class="highlight">AI</span></h3>
+                    <p>Optimasi BBM dengan Artificial Intelligence</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="/"><i class="fas fa-home"></i> Beranda</a></li>
+                        <li><a href="/dashboard"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+                        <li><a href="/analyze"><i class="fas fa-route"></i> Analisis</a></li>
+                    </ul>
+                </div>
+                <div class="footer-info">
+                    <h4>Teknologi</h4>
+                    <p>Machine Learning • Deep Learning • Optimization</p>
+                    <p>XGBoost • Neural Networks • Ensemble Methods</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 FuelAI. Built with ❤️ using Python & Flask</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Animate stats on scroll
+        const animateValue = (element, start, end, duration) => {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const value = Math.floor(progress * (end - start) + start);
+                element.innerHTML = value + (element.id.includes('accuracy') || element.id.includes('savings') ? '%' : '+');
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        };
+
+        // Observer for animation
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateValue(document.getElementById('accuracy-stat'), 0, 95, 2000);
+                    animateValue(document.getElementById('routes-stat'), 0, 1000, 2000);
+                    animateValue(document.getElementById('savings-stat'), 0, 30, 2000);
+                    observer.unobserve(entry.target);
+                }
+            });
+        });
+
+        observer.observe(document.querySelector('.hero-stats'));
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Add animation to cards on scroll
+        const cards = document.querySelectorAll('.feature-card, .step');
+        const cardObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        cards.forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'all 0.6s ease';
+            cardObserver.observe(card);
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tips Hemat BBM - Fuel Optimization AI</title>
+    <meta name="description" content="Tips dan trik untuk menghemat konsumsi bahan bakar kendaraan Anda">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='tips.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+
+<body>
+
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <i class="fas fa-brain"></i>
+                <span>Fuel<span class="highlight">AI</span></span>
+            </div>
+            <div class="nav-links">
+                <a href="/"><i class="fas fa-home"></i> Beranda</a>
+                <a href="/dashboard"><i class="fas fa-chart-line"></i> Dashboard</a>
+                <a href="/analyze"><i class="fas fa-route"></i> Analisis</a>
+                <a href="/tips" class="active"><i class="fas fa-lightbulb"></i> Tips</a>
+                <a href="/upload"><i class="fas fa-upload"></i> Upload</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Tips Header -->
+    <section class="dashboard-header">
+        <div class="container">
+            <h1><i class="fas fa-lightbulb"></i> Tips Hemat BBM</h1>
+            <p>Panduan lengkap untuk mengoptimalkan konsumsi bahan bakar</p>
+        </div>
+    </section>
+
+    <!-- Tips Content -->
+    <div class="tips-container">
+        <div class="container">
+            <!-- Stats Overview -->
+            <div class="savings-potential">
+                <h2>Potensi Penghematan dengan Tips Ini</h2>
+                <div class="potential-grid">
+                    <div class="potential-card">
+                        <div class="potential-icon"><i class="fas fa-percentage"></i></div>
+                        <div class="potential-value">20-30%</div>
+                        <div class="potential-label">Penghematan BBM</div>
+                    </div>
+                    <div class="potential-card">
+                        <div class="potential-icon"><i class="fas fa-coins"></i></div>
+                        <div class="potential-value">Rp 2-5 Jt</div>
+                        <div class="potential-label">Hemat per Bulan</div>
+                    </div>
+                    <div class="potential-card">
+                        <div class="potential-icon"><i class="fas fa-leaf"></i></div>
+                        <div class="potential-value">30%</div>
+                        <div class="potential-label">Kurangi Emisi</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category Tabs -->
+            <div class="tips-categories">
+                <button class="category-tab active" data-category="all">
+                    <i class="fas fa-th"></i> Semua Tips
+                </button>
+                <button class="category-tab" data-category="driving">
+                    <i class="fas fa-steering-wheel"></i> Mengemudi
+                </button>
+                <button class="category-tab" data-category="maintenance">
+                    <i class="fas fa-tools"></i> Perawatan
+                </button>
+                <button class="category-tab" data-category="route">
+                    <i class="fas fa-map-marked-alt"></i> Rute
+                </button>
+                <button class="category-tab" data-category="technology">
+                    <i class="fas fa-microchip"></i> Teknologi
+                </button>
+            </div>
+
+            <!-- Tips Grid -->
+            <div class="tips-grid">
+                <!-- Driving Tips -->
+                <div class="tip-card" data-category="driving">
+                    <div class="tip-header">
+                        <div class="tip-icon driving">
+                            <i class="fas fa-tachometer-alt"></i>
+                        </div>
+                        <div class="tip-priority high">Impact Tinggi</div>
+                    </div>
+                    <h3>Jaga Kecepatan Konstan</h3>
+                    <p>Pertahankan kecepatan stabil antara 50-80 km/jam. Akselerasi dan pengereman mendadak bisa
+                        meningkatkan konsumsi BBM hingga 40%.</p>
+                    <div class="tip-stats">
+                        <span><i class="fas fa-chart-line"></i> Hemat 15-20%</span>
+                        <span><i class="fas fa-clock"></i> Efek: Langsung</span>
+                    </div>
+                    <div class="tip-action">
+                        <button class="btn-tip" onclick="showTipDetail('speed')">Detail <i
+                                class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+
+                <div class="tip-card" data-category="driving">
+                    <div class="tip-header">
+                        <div class="tip-icon driving">
+                            <i class="fas fa-shoe-prints"></i>
+                        </div>
+                        <div class="tip-priority high">Impact Tinggi</div>
+                    </div>
+                    <h3>Hindari Pedal Gas Mendadak</h3>
+                    <p>Akselerasi perlahan dan halus. Tekan pedal gas secara bertahap untuk efisiensi maksimal.</p>
+                    <div class="tip-stats">
+                        <span><i class="fas fa-chart-line"></i> Hemat 10-15%</span>
+                        <span><i class="fas fa-clock"></i> Efek: Langsung</span>
+                    </div>
+                    <div class="tip-action">
+                        <button class="btn-tip" onclick="showTipDetail('acceleration')">Detail <i
+                                class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+
+                <div class="tip-card" data-category="driving">
+                    <div class="tip-header">
+                        <div class="tip-icon driving">
+                            <i class="fas fa-power-off"></i>
+                        </div>
+                        <div class="tip-priority medium">Impact Sedang</div>
+                    </div>
+                    <h3>Matikan Mesin Saat Idle</h3>
+                    <p>Matikan mesin jika berhenti lebih dari 30 detik. Idling menghabiskan 0.5-1 liter BBM per jam
+                        tanpa perjalanan.</p>
+                    <div class="tip-stats">
+                        <span><i class="fas fa-chart-line"></i> Hemat 5-10%</span>
+                        <span><i class="fas fa-clock"></i> Efek: Langsung</span>
+                    </div>
+                    <div class="tip-action">
+                        <button class="btn-tip" onclick="showTipDetail('idle')">Detail <i
+                                class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+
+                <div class="tip-card" data-category="driving">
+                    <div class="tip-header">
+                        <div class="tip-icon driving">
+                            <i class="fas fa-wind"></i>
+                        </div>
+                        <div class="tip-priority medium">Impact Sedang</div>
+                    </div>
+                    <h3>Gunakan AC Bijak</h3>
+                    <p>AC bisa meningkatkan konsumsi BBM 10-20%. Gunakan saat perlu, dan set suhu optimal 24-26°C.</p>
+                    <div class="tip-stats">
+                        <span><i class="fas fa-chart-line"></i> Hemat 10-20%</span>
+                        <span><i class="fas fa-clock"></i> Efek: Langsung</span>
+                    </div>
+                    <div class="tip-action">
+                        <button class="btn-tip" onclick="showTipDetail('ac')">Detail <i
+                                class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+
+                <!-- Maintenance Tips -->
+                <div class="tip-card" data-category="maintenance">
+                    <div class="tip-header">
+                        <div class="tip-icon maintenance">
+                            <i class="fas fa-car"></i>
+                        </div>
+                        <div class="tip-priority high">Impact Tinggi</div>
+                    </div>
+                    <h3>Tekanan Ban Optimal</h3>
+                    <p>Ban yang kurang angin meningkatkan konsumsi 3-5%. Cek tekanan ban setiap minggu sesuai
+                        rekomendasi pabrikan.</p>
+                    <div class="tip-stats">
+                        <span><i class="fas fa-chart-line"></i> Hemat 3-5%</span>
+                        <span><i class="fas fa-clock"></i> Cek: Mingguan</span>
+                    </div>
+                    <div class="tip-action">
+                        <button class="btn-tip" onclick="showTipDetail('tire')">Detail <i
+                                class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+
+                <div class="tip-card" data-category="maintenance">
+                    <div class="tip-header">
+                        <div class="tip-icon maintenance">
+                            <i class="fas fa-oil-can"></i>
+                        </div>
+                        <div class="tip-priority high">Impact Tinggi</div>
+                    </div>
+                    <h3>Service Rutin Tepat Waktu</h3>
+                    <p>Ganti oli, filter udara, dan busi sesuai jadwal. Mesin terawat bisa 10-15% lebih efisien.</p>
+                    <div class="tip-stats">
+                        <span><i class="fas fa-chart-line"></i> Hemat 10-15%</span>
+                        <span><i class="fas fa-clock"></i> Setiap 5,000 km</span>
+                    </div>
+                    <div class="tip-action">
+                        <button class="btn-tip" onclick="showTipDetail('service')">Detail <i
+                                class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+
+                <div class="tip-card" data-category="maintenance">
+                    <div class="tip-header">
+                        <div class="tip-icon maintenance">
+                            <i class="fas fa-weight-hanging"></i>
+                        </div>
+                        <div class="tip-priority medium">Impact Sedang</div>
+                    </div>
+                    <h3>Kurangi Beban Berlebih</h3>
+                    <p>Setiap 50kg beban ekstra meningkatkan konsumsi 2%. Bawa hanya barang yang diperlukan.</p>
+                    <div class="tip-stats">
+                        <span><i class="fas fa-chart-line"></i> Hemat 2-5%</span>
+                        <span><i class="fas fa-clock"></i> Efek: Langsung</span>
+                    </div>
+                    <div class="tip-action">
+                        <button class="btn-tip" onclick="showTipDetail('weight')">Detail <i
+                                class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+
+                <div class="tip-card" data-category="maintenance">
+                    <div class="tip-header">
+                        <div class="tip-icon maintenance">
+                            <i class="fas fa-cog"></i>
+                        </div>
+                        <div class="tip-priority medium">Impact Sedang</div>
+                    </div>
+                    <h3>Wheel Alignment & Balancing</h3>
+                    <p>Roda tidak seimbang membuat mesin bekerja lebih keras. Lakukan balancing setiap 10,000 km.</p>
+                    <div class="tip-stats">
+                        <span><i class="fas fa-chart-line"></i> Hemat 3-7%</span>
+                        <span><i class="fas fa-clock"></i> Setiap 10,000 km</span>
+                    </div>
+                    <div class="tip-action">
+                        <button class="btn-tip" onclick="showTipDetail('alignment')">Detail <i
+                                class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+
+                <!-- Route Tips -->
+                <div class="tip-card" data-category="route">
+                    <div class="tip-header">
+                        <div class="tip-icon route">
+                            <i class="fas fa-map"></i>
+                        </div>
+                        <div class="tip-priority high">Impact Tinggi</div>
+                    </div>
+                    <h3>Gunakan AI Route Optimizer</h3>
+                    <p>Sistem kami bisa menghemat 20-30% BBM dengan memilih rute optimal berdasarkan ML prediction.</p>
+                    <div class="tip-stats">
+                        <span><i class="fas fa-chart-line"></i> Hemat 20-30%</span>
+                        <span><i class="fas fa-clock"></i> Efek: Per Trip</span>
+                    </div>
+                    <div class="tip-action">
+                        <a href="/analyze" class="btn-tip">Coba Sekarang <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <div class="tip-card" data-category="route">
+                    <div class="tip-header">
+                        <div class="tip-icon route">
+                            <i class="fas fa-traffic-light"></i>
+                        </div>
+                        <div class="tip-priority high">Impact Tinggi</div>
+                    </div>
+                    <h3>Hindari Jam Macet</h3>
+                    <p>Lalu lintas padat bisa meningkatkan konsumsi 50%. Berangkat lebih awal atau lewat rute
+                        alternatif.</p>
+                    <div class="tip-stats">
+                        <span><i class="fas fa-chart-line"></i> Hemat 15-30%</span>
+                        <span><i class="fas fa-clock"></i> Efek: Per Trip</span>
+                    </div>
+                    <div class="tip-action">
+                        <button class="btn-tip" onclick="showTipDetail('traffic')">Detail <i
+                                class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+
+                <div class="tip-card" data-category="route">
+                    <div class="tip-header">
+                        <div class="tip-icon route">
+                            <i class="fas fa-road"></i>
+                        </div>
+                        <div class="tip-priority medium">Impact Sedang</div>
+                    </div>
+                    <h3>Pilih Jalan Mulus</h3>
+                    <p>Jalan rusak dan bergelombang meningkatkan resistensi. Pilih rute dengan kualitas jalan baik.</p>
+                    <div class="tip-stats">
+                        <span><i class="fas fa-chart-line"></i> Hemat 5-10%</span>
+                        <span><i class="fas fa-clock"></i> Efek: Per Trip</span>
+                    </div>
+                    <div class="tip-action">
+                        <button class="btn-tip" onclick="showTipDetail('road')">Detail <i
+                                class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+
+                <!-- Technology Tips -->
+                <div class="tip-card" data-category="technology">
+                    <div class="tip-header">
+                        <div class="tip-icon technology">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <div class="tip-priority high">Impact Tinggi</div>
+                    </div>
+                    <h3>Monitoring Real-time</h3>
+                    <p>Gunakan dashboard kami untuk tracking konsumsi BBM real-time dan dapat insights untuk
+                        improvement.</p>
+                    <div class="tip-stats">
+                        <span><i class="fas fa-chart-line"></i> Insight 24/7</span>
+                        <span><i class="fas fa-clock"></i> Efek: Berkelanjutan</span>
+                    </div>
+                    <div class="tip-action">
+                        <a href="/dashboard" class="btn-tip">Lihat Dashboard <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <div class="tip-card" data-category="technology">
+                    <div class="tip-header">
+                        <div class="tip-icon technology">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="tip-priority medium">Impact Sedang</div>
+                    </div>
+                    <h3>Analisis Data Historis</h3>
+                    <p>Upload data perjalanan Anda untuk mendapat rekomendasi personal berbasis AI.</p>
+                    <div class="tip-stats">
+                        <span><i class="fas fa-chart-line"></i> Rekomendasi AI</span>
+                        <span><i class="fas fa-clock"></i> Efek: Jangka Panjang</span>
+                    </div>
+                    <div class="tip-action">
+                        <a href="/upload" class="btn-tip">Upload Data <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <div class="tip-card" data-category="technology">
+                    <div class="tip-header">
+                        <div class="tip-icon technology">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div class="tip-priority high">Impact Tinggi</div>
+                    </div>
+                    <h3>Machine Learning Prediction</h3>
+                    <p>11+ model ML dengan akurasi 95% membantu prediksi konsumsi BBM untuk perencanaan budget.</p>
+                    <div class="tip-stats">
+                        <span><i class="fas fa-chart-line"></i> Akurasi 95%</span>
+                        <span><i class="fas fa-clock"></i> Instant Prediction</span>
+                    </div>
+                    <div class="tip-action">
+                        <a href="/analyze" class="btn-tip">Prediksi Sekarang <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Eco-Driving Quiz Section -->
+            <div class="quiz-section">
+                <div class="quiz-container" id="quizContainer">
+                    <div class="quiz-start" id="quizStart">
+                        <div class="quiz-icon-large">
+                            <i class="fas fa-gamepad"></i>
+                        </div>
+                        <h2>Tes Gaya Mengemudi Anda</h2>
+                        <p>Jawab 5 pertanyaan cepat untuk mengetahui skor "Eco-Driving" Anda dan dapatkan tips
+                            personal.</p>
+                        <button class="btn btn-primary btn-large" onclick="startQuiz()">Mulai Tes <i
+                                class="fas fa-play"></i></button>
+                    </div>
+
+                    <div class="quiz-question" id="quizQuestion" style="display: none;">
+                        <div class="quiz-progress">
+                            <div class="progress-bar-fill" id="quizProgress" style="width: 0%"></div>
+                        </div>
+                        <div class="question-header">
+                            <span class="question-number">Pertanyaan <span id="qCurrent">1</span>/5</span>
+                        </div>
+                        <h3 id="qText">Pertanyaan disini...</h3>
+                        <div class="quiz-options" id="qOptions">
+                            <!-- Options generated by JS -->
+                        </div>
+                    </div>
+
+                    <div class="ai-analyzing" id="aiAnalyzing" style="display: none;">
+                        <div class="scanner"></div>
+                        <div class="brain-pulse">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h3>AI Sedang Menganalisis...</h3>
+                        <p id="aiStatus">Membandingkan dengan 10,000+ data pengemudi...</p>
+                    </div>
+
+                    <div class="quiz-result" id="quizResult" style="display: none;">
+                        <div class="score-circle">
+                            <svg viewBox="0 0 36 36" class="circular-chart">
+                                <path class="circle-bg" d="M18 2.0845
+                                      a 15.9155 15.9155 0 0 1 0 31.831
+                                      a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                <path class="circle" id="scoreCirclePath" stroke-dasharray="0, 100" d="M18 2.0845
+                                      a 15.9155 15.9155 0 0 1 0 31.831
+                                      a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                <text x="18" y="20.35" class="percentage" id="scoreText">0</text>
+                            </svg>
+                        </div>
+                        <h2 id="resultTitle">Eco Warrior</h2>
+                        <p id="resultDesc">Gaya mengemudi Anda sangat efisien! Pertahankan.</p>
+
+                        <div class="ai-advice">
+                            <div class="ai-advice-header">
+                                <i class="fas fa-robot"></i> Rekomendasi AI Personal
+                            </div>
+                            <p id="aiRecommendation">Berdasarkan analisis pola jawaban Anda, fokus utama perbaikan ada
+                                pada akselerasi.</p>
+                        </div>
+
+                        <button class="btn btn-primary" onclick="resetQuiz()">Ulangi Tes <i
+                                class="fas fa-redo"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Calculator -->
+            <div class="savings-calculator">
+                <h2><i class="fas fa-calculator"></i> Kalkulator Penghematan</h2>
+                <div class="calculator-content">
+                    <div class="calculator-input">
+                        <div class="form-group">
+                            <label>Konsumsi BBM Saat Ini (liter/100km)</label>
+                            <input type="number" id="currentConsumption" value="12" min="5" max="30" step="0.5">
+                        </div>
+                        <div class="form-group">
+                            <label>Jarak Tempuh per Bulan (km)</label>
+                            <input type="number" id="monthlyDistance" value="2000" min="100" max="10000" step="100">
+                        </div>
+                        <div class="form-group">
+                            <label>Harga BBM (Rp/liter)</label>
+                            <input type="number" id="fuelPrice" value="10000" min="5000" max="20000" step="100">
+                        </div>
+                        <div class="form-group">
+                            <label>Target Penghematan (%)</label>
+                            <input type="range" id="savingsTarget" min="5" max="30" value="20" step="5">
+                            <span id="savingsTargetValue">20%</span>
+                        </div>
+                        <button class="btn btn-primary" onclick="calculateSavings()">
+                            <i class="fas fa-calculator"></i> Hitung Penghematan
+                        </button>
+                    </div>
+                    <div class="calculator-result" id="calculatorResult" style="display: none;">
+                        <h3>Potensi Penghematan Anda:</h3>
+                        <div class="result-grid">
+                            <div class="result-item">
+                                <div class="result-label">Per Bulan</div>
+                                <div class="result-value" id="monthlySavings">Rp 0</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-label">Per Tahun</div>
+                                <div class="result-value" id="yearlySavings">Rp 0</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-label">BBM Terhemat</div>
+                                <div class="result-value" id="fuelSaved">0 Liter</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chatbot Widget -->
+    <div class="chatbot-widget">
+        <div class="chat-window" id="chatWindow" style="display: none;">
+            <div class="chat-header" id="chatHeader">
+                <div class="chat-title">
+                    <i class="fas fa-robot"></i> FuelAI Assistant
+                </div>
+                <button class="chat-close" onclick="toggleChat()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="chat-body" id="chatBody">
+                <div class="message bot">
+                    <div class="message-content">
+                        Halo! Saya FuelAI Assistant. Ada yang bisa saya bantu mengenai penghematan BBM hari ini?
+                    </div>
+                </div>
+                <div class="chat-suggestions">
+                    <button onclick="sendSuggestion('Cara hemat BBM di tol')">Hemat di Tol</button>
+                    <button onclick="sendSuggestion('Tips perawatan mobil')">Perawatan</button>
+                    <button onclick="sendSuggestion('Tekanan ban ideal')">Tekanan Ban</button>
+                </div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="chatInput" placeholder="Tanya sesuatu..." onkeypress="handleEnter(event)">
+                <button class="chat-send" onclick="sendMessage()">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+        <button class="chat-toggle-btn" onclick="toggleChat()">
+            <i class="fas fa-comment-dots"></i>
+        </button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3><i class="fas fa-brain"></i> Fuel<span class="highlight">AI</span></h3>
+                    <p>Optimasi BBM dengan Artificial Intelligence</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 FuelAI. Built with ❤️ using Python & Flask</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Category filtering
+        document.querySelectorAll('.category-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                const category = tab.dataset.category;
+                document.querySelectorAll('.tip-card').forEach(card => {
+                    if (category === 'all' || card.dataset.category === category) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Savings target slider
+        document.getElementById('savingsTarget').addEventListener('input', (e) => {
+            document.getElementById('savingsTargetValue').textContent = e.target.value + '%';
+        });
+
+        // Calculate savings
+        function calculateSavings() {
+            const consumption = parseFloat(document.getElementById('currentConsumption').value);
+            const distance = parseFloat(document.getElementById('monthlyDistance').value);
+            const price = parseFloat(document.getElementById('fuelPrice').value);
+            const target = parseFloat(document.getElementById('savingsTarget').value) / 100;
+
+            const monthlyFuel = (consumption / 100) * distance;
+            const monthlyCost = monthlyFuel * price;
+            const savings = monthlyCost * target;
+            const yearlySavings = savings * 12;
+            const fuelSaved = monthlyFuel * target;
+
+            document.getElementById('monthlySavings').textContent = 'Rp ' + savings.toLocaleString('id-ID');
+            document.getElementById('yearlySavings').textContent = 'Rp ' + yearlySavings.toLocaleString('id-ID');
+            document.getElementById('fuelSaved').textContent = fuelSaved.toFixed(1) + ' Liter/bulan';
+            document.getElementById('calculatorResult').style.display = 'block';
+        }
+
+        function showTipDetail(tipId) {
+            alert('Detail untuk tip ini akan segera tersedia!');
+        }
+
+        // ===== QUIZ LOGIC =====
+        const quizData = [
+            {
+                question: "Seberapa sering Anda mengecek tekanan ban?",
+                options: [
+                    { text: "Setiap minggu", score: 20 },
+                    { text: "Sebulan sekali", score: 10 },
+                    { text: "Kalau kempes saja", score: 0 }
+                ]
+            },
+            {
+                question: "Bagaimana cara Anda berakselerasi saat lampu hijau?",
+                options: [
+                    { text: "Perlahan dan halus", score: 20 },
+                    { text: "Sedang-sedang saja", score: 10 },
+                    { text: "Langsung tancap gas", score: 0 }
+                ]
+            },
+            {
+                question: "Berapa kecepatan rata-rata Anda di jalan tol?",
+                options: [
+                    { text: "80-90 km/jam", score: 20 },
+                    { text: "100-110 km/jam", score: 15 },
+                    { text: "Di atas 120 km/jam", score: 0 }
+                ]
+            },
+            {
+                question: "Apakah mesin mobil sering menyala saat parkir (idling)?",
+                options: [
+                    { text: "Tidak, selalu dimatikan", score: 20 },
+                    { text: "Kadang-kadang", score: 10 },
+                    { text: "Sering, biar AC nyala", score: 0 }
+                ]
+            },
+            {
+                question: "Bagaimana kondisi bagasi mobil Anda?",
+                options: [
+                    { text: "Bersih, hanya barang penting", score: 20 },
+                    { text: "Ada beberapa barang tersimpan", score: 10 },
+                    { text: "Penuh barang tidak terpakai", score: 0 }
+                ]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let totalScore = 0;
+
+        function startQuiz() {
+            document.getElementById('quizStart').style.display = 'none';
+            document.getElementById('quizQuestion').style.display = 'block';
+            currentQuestion = 0;
+            totalScore = 0;
+            showQuestion();
+        }
+
+        let answers = []; // Store answers for AI analysis
+
+        function showQuestion() {
+            const q = quizData[currentQuestion];
+            document.getElementById('qCurrent').textContent = currentQuestion + 1;
+            document.getElementById('qText').textContent = q.question;
+            const progress = ((currentQuestion) / quizData.length) * 100;
+            document.getElementById('quizProgress').style.width = progress + '%';
+
+            const optionsDiv = document.getElementById('qOptions');
+            optionsDiv.innerHTML = '';
+
+            q.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'quiz-option';
+                btn.textContent = opt.text;
+                btn.onclick = () => selectAnswer(opt.score, index); // Pass index to track specific answer
+                optionsDiv.appendChild(btn);
+            });
+        }
+
+        function selectAnswer(score, answerIndex) {
+            totalScore += score;
+            answers.push({ questionId: currentQuestion, score: score }); // Track this answer
+            currentQuestion++;
+
+            if (currentQuestion < quizData.length) {
+                showQuestion();
+            } else {
+                startAIAnalysis(); // Call new AI analysis function
+            }
+        }
+
+        function startAIAnalysis() {
+            document.getElementById('quizQuestion').style.display = 'none';
+            document.getElementById('aiAnalyzing').style.display = 'block';
+
+            // Simulate AI steps
+            const statusElement = document.getElementById('aiStatus');
+            const steps = [
+                "Mengunggah pola jawaban...",
+                "Menganalisis parameter efisiensi...",
+                "Mencari kecocokan algoritma...",
+                "Menyiapkan rekomendasi personal..."
+            ];
+
+            let step = 0;
+            const stepInterval = setInterval(() => {
+                if (step < steps.length) {
+                    statusElement.textContent = steps[step];
+                    step++;
+                }
+            }, 800);
+
+            setTimeout(() => {
+                clearInterval(stepInterval);
+                showResult();
+            }, 3500); // 3.5s total processing time
+        }
+
+        function getAIRecommendation() {
+            // Find the lowest score answer to give specific advice
+            // Use simple logic to find "problem area"
+            const weakPoints = answers.filter(a => a.score < 15);
+
+            if (weakPoints.length === 0) {
+                return "Algoritma tidak menemukan kelemahan signifikan. Profil Anda menunjukkan efisiensi BBM di atas 95% populasi driver.";
+            }
+
+            const worstAnswer = weakPoints[0]; // Take the first major weakness
+
+            // Simple map of Question Index -> Advice (Simulation of AI Logic)
+            const adviceMap = [
+                "AI mendeteksi frekuensi cek ban Anda terlalu rendah. Tekanan ban menyumbang 5-10% inefisiensi.",
+                "Pola akselerasi agresif terdeteksi. Smooth acceleration bisa menghemat hingga 20% BBM di rute kota.",
+                "Kecepatan tinggi di tol adalah faktor utama borosnya BBM. Turunkan ke 90km/jam untuk hasil optimal.",
+                "Idling time Anda tinggi. Sistem merekomendasikan untuk mematikan mesin jika berhenti >60 detik.",
+                "Beban berlebih terdeteksi di bagasi. Hapus barang tak perlu untuk meningkatkan aerodinamika."
+            ];
+
+            return adviceMap[worstAnswer.questionId] || "AI menyarankan untuk lebih konsisten dalam menerapkan eco-driving.";
+        }
+
+        function showResult() {
+            document.getElementById('aiAnalyzing').style.display = 'none';
+            document.getElementById('quizResult').style.display = 'block';
+
+            // Generate personalised AI advice text
+            const aiText = getAIRecommendation();
+            document.getElementById('aiRecommendation').textContent = aiText;
+
+            const scoreElement = document.getElementById('scoreText');
+            let currentScoreDisplay = 0;
+            const scoreInterval = setInterval(() => {
+                if (currentScoreDisplay >= totalScore) {
+                    clearInterval(scoreInterval);
+                } else {
+                    currentScoreDisplay++;
+                    scoreElement.textContent = currentScoreDisplay;
+                }
+            }, 20);
+
+            // Animate Circle
+            setTimeout(() => {
+                document.getElementById('scoreCirclePath').setAttribute('stroke-dasharray', `${totalScore}, 100`);
+            }, 100);
+
+            let title, desc, color;
+            if (totalScore >= 80) {
+                title = "Eco Warrior! 🌿";
+                desc = "Gaya mengemudi Anda sangat efisien. Anda adalah pahlawan lingkungan dan dompet!";
+                color = "#10b981";
+            } else if (totalScore >= 50) {
+                title = "Average Driver 🚗";
+                desc = "Cukup baik, tapi masih ada ruang untuk penghematan lebih banyak. Perhatikan rekomendasi AI di bawah.";
+                color = "#f59e0b";
+            } else {
+                title = "Gas Guzzler ⛽";
+                desc = "Waduh! Gaya mengemudi Anda boros BBM. Perbaiki segera untuk hemat jutaan rupiah.";
+                color = "#ef4444";
+            }
+
+            document.getElementById('resultTitle').textContent = title;
+            document.getElementById('resultTitle').style.color = color;
+            document.getElementById('resultDesc').textContent = desc;
+            document.getElementById('scoreCirclePath').style.stroke = color;
+        }
+
+        function resetQuiz() {
+            document.getElementById('quizResult').style.display = 'none';
+            document.getElementById('quizStart').style.display = 'block';
+        }
+
+        // ===== CHATBOT LOGIC =====
+        function toggleChat() {
+            const chatWindow = document.getElementById('chatWindow');
+            if (chatWindow.style.display === 'none' || chatWindow.style.display === '') {
+                chatWindow.style.display = 'flex';
+            } else {
+                chatWindow.style.display = 'none';
+            }
+        }
+
+        function handleEnter(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function sendSuggestion(text) {
+            document.getElementById('chatInput').value = text;
+            sendMessage();
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+
+            if (message === '') return;
+
+            // Add user message
+            addMessage(message, 'user');
+            input.value = '';
+
+            // Loading indicator
+            const chatBody = document.getElementById('chatBody');
+            const loadingId = 'loading-' + Date.now();
+
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'message bot';
+            loadingDiv.id = loadingId;
+            loadingDiv.innerHTML = `<div class="message-content"><i class="fas fa-circle-notch fa-spin"></i> Sedang berpikir...</div>`;
+            chatBody.appendChild(loadingDiv);
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            // API Configuration
+            const systemPrompt = "Kamu adalah FuelAI Assistant. Tugasmu adalah membantu pengguna dengan berbagai pertanyaan mereka secara ramah, sopan, dan informatif. Meskipun kamu ahli dalam topik hemat BBM dan otomotif, kamu BISA menjawab pertanyaan umum apapun dengan sebaik-baiknya.";
+            const encodedPrompt = encodeURIComponent(systemPrompt);
+            const encodedContent = encodeURIComponent(message);
+            const apiUrl = `https://api.siputzx.my.id/api/ai/gpt3?prompt=${encodedPrompt}&content=${encodedContent}`;
+
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error('Network response was not ok');
+
+                const data = await response.json();
+
+                // Remove loading
+                document.getElementById(loadingId).remove();
+
+                // data.data is typical for this API structure based on similar free APIs, 
+                // but if it's raw JSON, we might need to adjust. 
+                // Assuming standard JSON response: { data: "response text" } or similar.
+                // Let's print to console to be safe during dev if needed, but for now map broadly.
+
+                const botReply = data.data || data.message || data.result || JSON.stringify(data);
+                addMessage(botReply, 'bot');
+
+            } catch (error) {
+                console.error('Error fetching AI response:', error);
+                document.getElementById(loadingId).remove();
+                addMessage("Maaf, koneksi ke FuelAI terputus. Silakan coba lagi nanti.", 'bot');
+            }
+        }
+
+        function parseMarkdown(text) {
+            if (!text) return '';
+            
+            // Configure marked options for security and style
+            marked.use({
+                breaks: true,
+                gfm: true
+            });
+
+            return marked.parse(text);
+        }
+
+        function addMessage(text, sender) {
+            const chatBody = document.getElementById('chatBody');
+            const div = document.createElement('div');
+            div.className = `message ${sender}`;
+
+            // Use the new parser for better display
+            const formattedText = parseMarkdown(text);
+
+            div.innerHTML = `<div class="message-content">${formattedText}</div>`;
+            chatBody.appendChild(div);
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        // ===== DRAGGABLE LOGIC =====
+        const chatWindow = document.getElementById("chatWindow");
+        const chatHeader = document.getElementById("chatHeader");
+
+        chatHeader.onmousedown = function (e) {
+            // Don't drag if clicking close button
+            if (e.target.closest('.chat-close') || e.target.closest('.chat-toggle-btn')) return;
+            e.preventDefault();
+
+            // Switch to fixed positioning if not already
+            // This detaches it from the bottom-right constraint
+            chatWindow.style.position = 'fixed';
+            chatWindow.style.bottom = 'auto';
+            chatWindow.style.right = 'auto';
+            chatWindow.style.transform = 'none'; // Disable animations affecting transform
+
+            // Calculate current position if switching from default
+            const rect = chatWindow.getBoundingClientRect();
+
+            // Set initial left/top based on current visual position
+            if (!chatWindow.style.left) {
+                chatWindow.style.left = rect.left + "px";
+                chatWindow.style.top = rect.top + "px";
+            }
+
+            let shiftX = e.clientX - chatWindow.getBoundingClientRect().left;
+            let shiftY = e.clientY - chatWindow.getBoundingClientRect().top;
+
+            function moveAt(pageX, pageY) {
+                // Bounds checking (optional, but good)
+                let newLeft = pageX - shiftX;
+                let newTop = pageY - shiftY;
+
+                chatWindow.style.left = newLeft + 'px';
+                chatWindow.style.top = newTop + 'px';
+            }
+
+            function onMouseMove(event) {
+                moveAt(event.pageX, event.pageY);
+            }
+
+            document.addEventListener('mousemove', onMouseMove);
+
+            document.onmouseup = function () {
+                document.removeEventListener('mousemove', onMouseMove);
+                document.onmouseup = null;
+            };
+        };
+    </script>
+
+</html>

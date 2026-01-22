@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Fuel Optimization AI</title>
+    <meta name="description" content="Dashboard analisis dan visualisasi prediksi konsumsi BBM">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <i class="fas fa-brain"></i>
+                <span>Fuel<span class="highlight">AI</span></span>
+            </div>
+            <div class="nav-links">
+                <a href="/"><i class="fas fa-home"></i> Beranda</a>
+                <a href="/dashboard" class="active"><i class="fas fa-chart-line"></i> Dashboard</a>
+                <a href="/analyze"><i class="fas fa-route"></i> Analisis</a>
+                <a href="/tips"><i class="fas fa-lightbulb"></i> Tips</a>
+                <a href="/upload"><i class="fas fa-upload"></i> Upload</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Header -->
+    <section class="dashboard-header">
+        <div class="container">
+            <h1><i class="fas fa-chart-line"></i> Dashboard Analisis</h1>
+            <p>Visualisasi performa model dan hasil analisis rute</p>
+        </div>
+    </section>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard-container">
+        <div class="container">
+            <!-- Loading State -->
+            <div id="loading" class="loading-state">
+                <div class="loader"></div>
+                <p>Memuat data dashboard...</p>
+            </div>
+
+            <!-- Error State -->
+            <div id="error" class="error-state" style="display: none;">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>Gagal memuat data. Silakan refresh halaman.</p>
+            </div>
+
+            <!-- Model Performance Section -->
+            <div id="dashboardContent" style="display: none;">
+                <div class="dashboard-section">
+                    <h2 class="section-title"><i class="fas fa-microchip"></i> Performa Model Machine Learning</h2>
+
+                    <div class="stats-grid">
+                        <div class="stat-card primary">
+                            <div class="stat-icon"><i class="fas fa-trophy"></i></div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="bestModel">-</div>
+                                <div class="stat-label">Model Terbaik</div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card success">
+                            <div class="stat-icon"><i class="fas fa-bullseye"></i></div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="bestScore">-</div>
+                                <div class="stat-label">R² Score</div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card info">
+                            <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="timestamp">-</div>
+                                <div class="stat-label">Last Updated</div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card warning">
+                            <div class="stat-icon"><i class="fas fa-layer-group"></i></div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="modelCount">-</div>
+                                <div class="stat-label">Total Models</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Model Comparison Table -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-table"></i> Perbandingan Semua Model</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table id="modelTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Model</th>
+                                            <th>R² Score</th>
+                                            <th>MAE</th>
+                                            <th>RMSE</th>
+                                            <th>CV R²</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="modelTableBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visualizations Section -->
+                <div class="dashboard-section">
+                    <h2 class="section-title"><i class="fas fa-chart-bar"></i> Visualisasi Data & Model</h2>
+
+                    <div class="viz-grid">
+                        <div class="viz-card">
+                            <h3><i class="fas fa-chart-pie"></i> Distribusi Data</h3>
+                            <img src="/plots/data_distribution.png" alt="Data Distribution" class="viz-image">
+                        </div>
+
+                        <div class="viz-card">
+                            <h3><i class="fas fa-fire"></i> Heatmap Korelasi</h3>
+                            <img src="/plots/correlation_heatmap.png" alt="Correlation Heatmap" class="viz-image">
+                        </div>
+
+                        <div class="viz-card">
+                            <h3><i class="fas fa-balance-scale"></i> Perbandingan Model</h3>
+                            <img src="/plots/model_comparison.png" alt="Model Comparison" class="viz-image">
+                        </div>
+
+                        <div class="viz-card">
+                            <h3><i class="fas fa-crosshairs"></i> Prediksi vs Aktual</h3>
+                            <img src="/plots/predictions_comparison.png" alt="Predictions Comparison" class="viz-image">
+                        </div>
+
+                        <div class="viz-card">
+                            <h3><i class="fas fa-star"></i> Feature Importance</h3>
+                            <img src="/plots/feature_importance.png" alt="Feature Importance" class="viz-image">
+                        </div>
+
+                        <div class="viz-card">
+                            <h3><i class="fas fa-route"></i> Perbandingan Rute</h3>
+                            <img src="/plots/route_comparison.png" alt="Route Comparison" class="viz-image">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Route Analysis Section -->
+                <div class="dashboard-section">
+                    <h2 class="section-title"><i class="fas fa-road"></i> Hasil Analisis Rute</h2>
+
+                    <div class="route-results" id="routeResults">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Savings Analysis Section -->
+                <div class="dashboard-section">
+                    <h2 class="section-title"><i class="fas fa-piggy-bank"></i> Analisis Penghematan</h2>
+
+                    <div class="savings-grid">
+                        <div class="savings-card">
+                            <div class="savings-icon"><i class="fas fa-gas-pump"></i></div>
+                            <div class="savings-value" id="fuelSaving">-</div>
+                            <div class="savings-label">Penghematan BBM (Liter/Trip)</div>
+                        </div>
+
+                        <div class="savings-card">
+                            <div class="savings-icon"><i class="fas fa-money-bill-wave"></i></div>
+                            <div class="savings-value" id="costSaving">-</div>
+                            <div class="savings-label">Penghematan Biaya (Rp/Trip)</div>
+                        </div>
+
+                        <div class="savings-card">
+                            <div class="savings-icon"><i class="fas fa-calendar-day"></i></div>
+                            <div class="savings-value" id="dailySaving">-</div>
+                            <div class="savings-label">Penghematan Harian (3 Trip)</div>
+                        </div>
+
+                        <div class="savings-card">
+                            <div class="savings-icon"><i class="fas fa-calendar-alt"></i></div>
+                            <div class="savings-value" id="monthlySaving">-</div>
+                            <div class="savings-label">Penghematan Bulanan</div>
+                        </div>
+
+                        <div class="savings-card highlight">
+                            <div class="savings-icon"><i class="fas fa-trophy"></i></div>
+                            <div class="savings-value" id="yearlySaving">-</div>
+                            <div class="savings-label">Penghematan Tahunan</div>
+                        </div>
+                    </div>
+
+                    <div class="savings-comparison">
+                        <div class="comparison-item best">
+                            <h4><i class="fas fa-crown"></i> Rute Terbaik</h4>
+                            <p id="bestRoute">-</p>
+                        </div>
+                        <div class="comparison-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                        <div class="comparison-item worst">
+                            <h4><i class="fas fa-times-circle"></i> Rute Terburuk</h4>
+                            <p id="worstRoute">-</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3><i class="fas fa-brain"></i> Fuel<span class="highlight">AI</span></h3>
+                    <p>Optimasi BBM dengan Artificial Intelligence</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 FuelAI. Built with ❤️ using Python & Flask</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Load Dashboard Data
+        async function loadDashboard() {
+            try {
+                // Load model info
+                const modelResponse = await fetch('/api/model-info');
+                if (!modelResponse.ok) throw new Error('Failed to load model info');
+                const modelData = await modelResponse.json();
+
+                // Update model stats
+                document.getElementById('bestModel').textContent = modelData.best_model || 'N/A';
+                document.getElementById('bestScore').textContent = (modelData.best_score || 0).toFixed(4);
+                document.getElementById('modelCount').textContent = Object.keys(modelData.models || {}).length;
+
+                // Format timestamp
+                if (modelData.timestamp) {
+                    const date = new Date(modelData.timestamp);
+                    document.getElementById('timestamp').textContent = date.toLocaleString('id-ID');
+                }
+
+                // Populate model table
+                const tbody = document.getElementById('modelTableBody');
+                tbody.innerHTML = '';
+
+                for (const [name, info] of Object.entries(modelData.models || {})) {
+                    const row = tbody.insertRow();
+                    const r2 = info.r2 || 0;
+                    let status = '';
+                    if (r2 >= 0.9) status = '<span class="badge badge-excellent">🌟 Excellent</span>';
+                    else if (r2 >= 0.8) status = '<span class="badge badge-good">✅ Very Good</span>';
+                    else if (r2 >= 0.7) status = '<span class="badge badge-fair">👍 Good</span>';
+                    else status = '<span class="badge badge-poor">⚠️ Fair</span>';
+
+                    row.innerHTML = `
+                        <td><strong>${name}</strong></td>
+                        <td>${r2.toFixed(4)}</td>
+                        <td>${(info.mae || 0).toFixed(2)}</td>
+                        <td>${(info.rmse || 0).toFixed(2)}</td>
+                        <td>${(info.cv_r2 || 0).toFixed(4)}</td>
+                        <td>${status}</td>
+                    `;
+                }
+
+                // Load route analysis
+                const routeResponse = await fetch('/api/route-analysis');
+                if (routeResponse.ok) {
+                    const routes = await routeResponse.json();
+                    displayRoutes(routes);
+                }
+
+                // Load savings analysis
+                const savingsResponse = await fetch('/api/savings');
+                if (savingsResponse.ok) {
+                    const savings = await savingsResponse.json();
+                    displaySavings(savings);
+                }
+
+                // Show dashboard content
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('dashboardContent').style.display = 'block';
+
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error').style.display = 'block';
+            }
+        }
+
+        function displayRoutes(routes) {
+            const container = document.getElementById('routeResults');
+            container.innerHTML = '';
+
+            routes.forEach((route, index) => {
+                const card = document.createElement('div');
+                card.className = 'route-card' + (index === 0 ? ' best' : '');
+                card.innerHTML = `
+                    <div class="route-header">
+                        <h3>${route.rute} ${index === 0 ? '<i class="fas fa-crown"></i>' : ''}</h3>
+                        <div class="route-score">${route.skor_efisiensi?.toFixed(0) || 0}</div>
+                    </div>
+                    <div class="route-details">
+                        <div class="detail-item">
+                            <i class="fas fa-road"></i>
+                            <span><strong>Jarak:</strong> ${route.jarak_km} km</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-clock"></i>
+                            <span><strong>Waktu:</strong> ${route.waktu_menit} menit</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-gas-pump"></i>
+                            <span><strong>BBM:</strong> ${route.prediksi_bbm_liter?.toFixed(1) || 0} liter</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span><strong>Efisiensi:</strong> ${route.efisiensi_km_per_liter?.toFixed(2) || 0} km/L</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-money-bill"></i>
+                            <span><strong>Total Biaya:</strong> Rp ${(route.total_biaya_rp || 0).toLocaleString('id-ID')}</span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function displaySavings(savings) {
+            document.getElementById('fuelSaving').textContent = (savings.fuel_saving || 0).toFixed(1) + ' L';
+            document.getElementById('costSaving').textContent = 'Rp ' + (savings.cost_saving || 0).toLocaleString('id-ID');
+            document.getElementById('dailySaving').textContent = 'Rp ' + (savings.daily_saving || 0).toLocaleString('id-ID');
+            document.getElementById('monthlySaving').textContent = 'Rp ' + (savings.monthly_saving || 0).toLocaleString('id-ID');
+            document.getElementById('yearlySaving').textContent = 'Rp ' + (savings.yearly_saving || 0).toLocaleString('id-ID');
+
+            document.getElementById('bestRoute').textContent = savings.best_route || 'N/A';
+            document.getElementById('worstRoute').textContent = savings.worst_route || 'N/A';
+        }
+
+        // Load dashboard on page load
+        window.addEventListener('DOMContentLoaded', loadDashboard);
+
+        // Refresh every 60 seconds
+        setInterval(loadDashboard, 60000);
+    </script>
+</body>
+
+</html>

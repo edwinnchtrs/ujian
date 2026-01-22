@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analisis Rute - Fuel Optimization AI</title>
+    <meta name="description" content="Prediksi konsumsi BBM untuk rute kustom Anda">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <!-- Leaflet & Routing Machine -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder@1.9.0/dist/Control.Geocoder.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder@1.9.0/dist/Control.Geocoder.js"></script>
+
+    <style>
+        .map-section {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        #map {
+            height: 500px;
+            width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+        }
+
+        /* Routing Container Glassmorphism */
+        .leaflet-routing-container {
+            background-color: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            border-radius: 16px !important;
+            padding: 20px !important;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1) !important;
+            border: 1px solid rgba(255, 255, 255, 0.5) !important;
+            font-family: 'Inter', sans-serif;
+            width: 320px !important;
+            margin-right: 20px !important;
+            margin-top: 20px !important;
+        }
+
+        .leaflet-routing-container h2,
+        .leaflet-routing-container h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        /* Input Fields */
+        .leaflet-routing-geocoders input {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 12px;
+            border: 2px solid #f0f0f0;
+            border-radius: 12px;
+            background: #f8f9fa;
+            color: #333;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .leaflet-routing-geocoders input:focus {
+            background: #fff;
+            border-color: #4ECDC4;
+            box-shadow: 0 0 0 4px rgba(78, 205, 196, 0.15);
+            outline: none;
+        }
+
+        /* Geocoder Control Styling */
+        .leaflet-control-geocoder {
+            border-radius: 12px !important;
+            border: none !important;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+            overflow: hidden;
+            background: white;
+            z-index: 1000;
+            margin-top: 20px !important;
+            margin-left: 20px !important;
+        }
+
+        .leaflet-control-geocoder-icon {
+            width: 36px !important;
+            height: 36px !important;
+            line-height: 36px !important;
+            background-image: none !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .leaflet-control-geocoder-icon::before {
+            content: '\f002';
+            /* search icon */
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: #4ECDC4;
+            font-size: 16px;
+        }
+
+        .leaflet-control-geocoder-form input {
+            padding: 8px 15px !important;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            color: #333;
+            height: 36px !important;
+        }
+
+        /* Buttons */
+        .leaflet-bar a {
+            background-color: #fff;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            width: 36px;
+            height: 36px;
+            line-height: 36px;
+            border-radius: 8px !important;
+            margin-bottom: 5px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .map-instruction {
+            background: linear-gradient(135deg, #4ECDC4, #556270);
+            color: white;
+            padding: 1.2rem;
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            box-shadow: 0 10px 25px rgba(78, 205, 196, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <i class="fas fa-brain"></i>
+                <span>Fuel<span class="highlight">AI</span></span>
+            </div>
+            <div class="nav-links">
+                <a href="/"><i class="fas fa-home"></i> Beranda</a>
+                <a href="/dashboard"><i class="fas fa-chart-line"></i> Dashboard</a>
+                <a href="/analyze" class="active"><i class="fas fa-route"></i> Analisis</a>
+                <a href="/tips"><i class="fas fa-lightbulb"></i> Tips</a>
+                <a href="/upload"><i class="fas fa-upload"></i> Upload</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Analysis Header -->
+    <section class="dashboard-header">
+        <div class="container">
+            <h1><i class="fas fa-route"></i> Analisis Rute</h1>
+            <p>Prediksi konsumsi BBM untuk rute kustom menggunakan AI</p>
+        </div>
+    </section>
+
+    <!-- Analysis Content -->
+    <div class="analyze-container">
+        <div class="container">
+            <!-- Map Section -->
+            <div class="map-section">
+                <div class="map-instruction">
+                    <i class="fas fa-map-marked-alt fa-2x"></i>
+                    <div>
+                        <h3 style="margin: 0; font-size: 1.1rem;">Pilih Rute di Peta</h3>
+                        <p style="margin: 0; font-size: 0.9rem; opacity: 0.9;">Klik peta untuk set titik awal (A) dan
+                            tujuan (B). Jarak & Waktu akan terisi otomatis.</p>
+                    </div>
+                </div>
+                <div id="map"></div>
+            </div>
+
+
+            <div class="analyze-grid">
+                <!-- Input Form -->
+                <div class="input-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-edit"></i> Input Data Rute</h2>
+                            <p>Masukkan detail rute untuk prediksi</p>
+                        </div>
+                        <div class="card-body">
+                            <form id="routeForm">
+                                <div class="form-group">
+                                    <label for="jarak_km">
+                                        <i class="fas fa-road"></i> Jarak Tempuh (km)
+                                    </label>
+                                    <input type="number" id="jarak_km" name="jarak_km" min="1" max="1000" value="150"
+                                        step="1" required>
+                                    <small>Jarak total perjalanan dalam kilometer</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="waktu_tempuh_menit">
+                                        <i class="fas fa-clock"></i> Waktu Tempuh (menit)
+                                    </label>
+                                    <input type="number" id="waktu_tempuh_menit" name="waktu_tempuh_menit" min="1"
+                                        max="2000" value="180" step="1" required>
+                                    <small>Estimasi waktu perjalanan dalam menit</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="kepadatan_lalu_lintas">
+                                        <i class="fas fa-traffic-light"></i> Kepadatan Lalu Lintas
+                                    </label>
+                                    <select id="kepadatan_lalu_lintas" name="kepadatan_lalu_lintas" required>
+                                        <option value="1">1 - Sangat Sepi</option>
+                                        <option value="2">2 - Sepi</option>
+                                        <option value="3" selected>3 - Normal</option>
+                                        <option value="4">4 - Agak Ramai</option>
+                                        <option value="5">5 - Ramai</option>
+                                        <option value="6">6 - Padat</option>
+                                        <option value="7">7 - Sangat Padat</option>
+                                        <option value="8">8 - Macet</option>
+                                        <option value="9">9 - Macet Total</option>
+                                        <option value="10">10 - Gridlock</option>
+                                    </select>
+                                    <small>Tingkat kepadatan lalu lintas (1-10)</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="kondisi_jalan">
+                                        <i class="fas fa-road"></i> Kondisi Jalan
+                                    </label>
+                                    <select id="kondisi_jalan" name="kondisi_jalan" required>
+                                        <option value="1">1 - Rusak Parah</option>
+                                        <option value="2">2 - Rusak</option>
+                                        <option value="3">3 - Kurang Baik</option>
+                                        <option value="4" selected>4 - Baik</option>
+                                        <option value="5">5 - Sangat Baik</option>
+                                    </select>
+                                    <small>Kualitas kondisi jalan (1-5)</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="kondisi_cuaca">
+                                        <i class="fas fa-cloud-sun"></i> Kondisi Cuaca
+                                    </label>
+                                    <select id="kondisi_cuaca" name="kondisi_cuaca" required>
+                                        <option value="0">Hujan Lebat</option>
+                                        <option value="1">Hujan Ringan/Mendung</option>
+                                        <option value="2" selected>Cerah</option>
+                                        <option value="3">Panas Terik</option>
+                                    </select>
+                                    <small>Kondisi cuaca saat perjalanan</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="jenis_kendaraan">
+                                        <i class="fas fa-truck"></i> Jenis Kendaraan
+                                    </label>
+                                    <select id="jenis_kendaraan" name="jenis_kendaraan" required>
+                                        <option value="0" selected>Kendaraan Kecil (Minibus)</option>
+                                        <option value="1">Kendaraan Sedang (Truck Kecil)</option>
+                                        <option value="2">Kendaraan Besar (Truck Besar)</option>
+                                    </select>
+                                    <small>Tipe kendaraan yang digunakan</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="berat_muatan_ton">
+                                        <i class="fas fa-weight-hanging"></i> Berat Muatan (ton)
+                                    </label>
+                                    <input type="number" id="berat_muatan_ton" name="berat_muatan_ton" min="0.1"
+                                        max="10" value="1.0" step="0.1" required>
+                                    <small>Berat total muatan dalam ton</small>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary btn-block">
+                                    <i class="fas fa-calculator"></i> Prediksi Konsumsi BBM
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Quick Presets -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-magic"></i> Preset Cepat</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="preset-buttons">
+                                <button class="btn btn-secondary btn-sm" onclick="loadPreset('city')">
+                                    <i class="fas fa-city"></i> Dalam Kota
+                                </button>
+                                <button class="btn btn-secondary btn-sm" onclick="loadPreset('highway')">
+                                    <i class="fas fa-road"></i> Jalan Tol
+                                </button>
+                                <button class="btn btn-secondary btn-sm" onclick="loadPreset('rural')">
+                                    <i class="fas fa-tree"></i> Pedesaan
+                                </button>
+                                <button class="btn btn-secondary btn-sm" onclick="loadPreset('mixed')">
+                                    <i class="fas fa-random"></i> Campuran
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results Section -->
+                <div class="results-section">
+                    <!-- Prediction Result -->
+                    <div id="resultCard" class="card result-card" style="display: none;">
+                        <div class="card-header">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                                <h2><i class="fas fa-chart-bar"></i> Hasil Prediksi</h2>
+                                <span class="badge badge-success"
+                                    style="background: #2ecc71; color: white; padding: 5px 10px; border-radius: 20px; font-size: 0.8rem;">
+                                    <i class="fas fa-check-circle"></i> Rute Teroptimasi
+                                </span>
+                            </div>
+                            <span class="model-badge" id="modelBadge"
+                                style="margin-top: 5px; display: block; font-size: 0.8rem; opacity: 0.8;">-</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="result-highlight">
+                                <div class="result-main">
+                                    <i class="fas fa-gas-pump"></i>
+                                    <div class="result-value-container">
+                                        <div class="result-value" id="fuelPrediction">0</div>
+                                        <div class="result-unit">Liter</div>
+                                    </div>
+                                </div>
+                                <p class="result-subtitle">Estimasi Konsumsi BBM</p>
+                            </div>
+
+                            <div class="result-grid">
+                                <div class="result-item">
+                                    <i class="fas fa-tachometer-alt"></i>
+                                    <div class="result-info">
+                                        <div class="result-label">Efisiensi</div>
+                                        <div class="result-number" id="efficiency">-</div>
+                                    </div>
+                                </div>
+
+                                <div class="result-item">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                    <div class="result-info">
+                                        <div class="result-label">Biaya BBM</div>
+                                        <div class="result-number" id="fuelCost">-</div>
+                                    </div>
+                                </div>
+
+                                <div class="result-item">
+                                    <i class="fas fa-clock"></i>
+                                    <div class="result-info">
+                                        <div class="result-label">Biaya Waktu</div>
+                                        <div class="result-number" id="timeCost">-</div>
+                                    </div>
+                                </div>
+
+                                <div class="result-item highlight">
+                                    <i class="fas fa-wallet"></i>
+                                    <div class="result-info">
+                                        <div class="result-label">Total Biaya</div>
+                                        <div class="result-number" id="totalCost">-</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accuracy-info">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Akurasi Model (R²): <strong id="accuracy">-</strong></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div id="loadingState" class="card" style="display: none;">
+                        <div class="card-body text-center">
+                            <div class="loader"></div>
+                            <p>Memproses prediksi...</p>
+                        </div>
+                    </div>
+
+                    <!-- Info Card -->
+                    <div class="card info-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-info-circle"></i> Tentang Prediksi</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="info-item">
+                                <i class="fas fa-microchip"></i>
+                                <p><strong>11+ Model Machine Learning</strong> digunakan untuk prediksi akurat</p>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-cogs"></i>
+                                <p><strong>20+ Features</strong> hasil feature engineering otomatis</p>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-bullseye"></i>
+                                <p><strong>Akurasi Tinggi</strong> dengan R² score di atas 0.9</p>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-bolt"></i>
+                                <p><strong>Real-time Prediction</strong> hasil dalam hitungan detik</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tips Card -->
+                    <div class="card tips-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-lightbulb"></i> Tips Menghemat BBM</h3>
+                        </div>
+                        <div class="card-body">
+                            <ul class="tips-list">
+                                <li><i class="fas fa-check"></i> Pilih rute dengan jalan berkualitas baik</li>
+                                <li><i class="fas fa-check"></i> Hindari jam-jam sibuk untuk kurangi macet</li>
+                                <li><i class="fas fa-check"></i> Pertahankan kecepatan konstan di jalan tol</li>
+                                <li><i class="fas fa-check"></i> Periksa kondisi kendaraan secara rutin</li>
+                                <li><i class="fas fa-check"></i> Sesuaikan beban muatan dengan kapasitas</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3><i class="fas fa-brain"></i> Fuel<span class="highlight">AI</span></h3>
+                    <p>Optimasi BBM dengan Artificial Intelligence</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 FuelAI. Built with ❤️ using Python & Flask</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Map
+        const map = L.map('map').setView([-6.2088, 106.8456], 10); // Jakarta center
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Standalone Geocoder removed as per user request (moved to Start/End inputs)
+
+
+        // Routing Control
+        let routingControl = L.Routing.control({
+            waypoints: [
+                null, // Start
+                null  // End
+            ],
+            routeWhileDragging: true,
+            geocoder: L.Control.Geocoder.nominatim(),
+            showAlternatives: true,
+            lineOptions: {
+                styles: [{ color: '#4ECDC4', opacity: 0.8, weight: 6 }]
+            },
+            createMarker: function (i, wp, nWps) {
+                const markerIcon = L.divIcon({
+                    className: 'custom-div-icon',
+                    html: `<div style="background-color: ${i === 0 ? '#4ECDC4' : '#FF6B6B'}; width: 12px; height: 12px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.3);"></div>`,
+                    iconSize: [12, 12],
+                    iconAnchor: [6, 6]
+                });
+                return L.marker(wp.latLng, {
+                    draggable: true,
+                    icon: markerIcon
+                });
+            }
+        }).addTo(map);
+
+        // Handle Map Clicks for Waypoints
+        let clickCount = 0;
+        map.on('click', function (e) {
+            const container = document.querySelector('.leaflet-routing-container');
+            if (container) container.style.display = 'block';
+
+            if (clickCount === 0) {
+                routingControl.spliceWaypoints(0, 1, e.latlng);
+                clickCount++;
+            } else if (clickCount === 1) {
+                routingControl.spliceWaypoints(1, 1, e.latlng);
+                clickCount = 0;
+            } else {
+                // Reset if full
+                routingControl.spliceWaypoints(0, 2, e.latlng, null);
+                clickCount = 1;
+            }
+        });
+
+        // Preset configurations
+        const presets = {
+            city: {
+                jarak_km: 50,
+                waktu_tempuh_menit: 90,
+                kepadatan_lalu_lintas: 7,
+                kondisi_jalan: 4,
+                kondisi_cuaca: 2,
+                jenis_kendaraan: 0,
+                berat_muatan_ton: 0.8
+            },
+            highway: {
+                jarak_km: 250,
+                waktu_tempuh_menit: 180,
+                kepadatan_lalu_lintas: 3,
+                kondisi_jalan: 5,
+                kondisi_cuaca: 2,
+                jenis_kendaraan: 1,
+                berat_muatan_ton: 1.5
+            },
+            rural: {
+                jarak_km: 120,
+                waktu_tempuh_menit: 150,
+                kepadatan_lalu_lintas: 2,
+                kondisi_jalan: 3,
+                kondisi_cuaca: 2,
+                jenis_kendaraan: 0,
+                berat_muatan_ton: 1.0
+            },
+            mixed: {
+                jarak_km: 180,
+                waktu_tempuh_menit: 200,
+                kepadatan_lalu_lintas: 5,
+                kondisi_jalan: 4,
+                kondisi_cuaca: 2,
+                jenis_kendaraan: 0,
+                berat_muatan_ton: 1.2
+            }
+        };
+
+        function loadPreset(type) {
+            const preset = presets[type];
+            for (const [key, value] of Object.entries(preset)) {
+                const element = document.getElementById(key);
+                if (element) element.value = value;
+            }
+        }
+
+        // Manual Input Listeners - update estimates logic
+        document.getElementById('jarak_km').addEventListener('input', (e) => {
+            const jarak = parseFloat(e.target.value);
+            if (jarak > 0) {
+                const kepadatan = parseInt(document.getElementById('kepadatan_lalu_lintas').value);
+                const avgSpeed = 80 - (kepadatan * 5);
+                const estimatedTime = (jarak / avgSpeed) * 60;
+                // Only auto-update time if user is typing distance manually
+                document.getElementById('waktu_tempuh_menit').value = Math.round(estimatedTime);
+            }
+        });
+
+        document.getElementById('kepadatan_lalu_lintas').addEventListener('change', () => {
+            const jarak = parseFloat(document.getElementById('jarak_km').value);
+            if (jarak > 0) {
+                const kepadatan = parseInt(document.getElementById('kepadatan_lalu_lintas').value);
+                const avgSpeed = 80 - (kepadatan * 5);
+                const estimatedTime = (jarak / avgSpeed) * 60;
+                document.getElementById('waktu_tempuh_menit').value = Math.round(estimatedTime);
+            }
+        });
+
+        // Standalone Function for Prediction Logic
+        async function calculateFuelPrediction() {
+            // Show loading state
+            document.getElementById('resultCard').style.display = 'none';
+
+            // UI Toast Feedback
+            const toastId = 'calc-toast-' + Date.now();
+            const toast = document.createElement('div');
+            toast.id = toastId;
+            toast.style.position = 'fixed';
+            toast.style.bottom = '20px';
+            toast.style.right = '20px';
+            toast.style.backgroundColor = '#2c3e50';
+            toast.style.color = 'white';
+            toast.style.padding = '15px 25px';
+            toast.style.borderRadius = '10px';
+            toast.style.boxShadow = '0 5px 15px rgba(0,0,0,0.2)';
+            toast.style.zIndex = '9999';
+            toast.style.display = 'flex';
+            toast.style.alignItems = 'center';
+            toast.style.gap = '10px';
+            toast.innerHTML = '<i class="fas fa-calculator fa-spin"></i> Menghitung estimasi biaya...';
+            document.body.appendChild(toast);
+
+            // Collect form data
+            const formData = {
+                jarak_km: parseFloat(document.getElementById('jarak_km').value),
+                waktu_tempuh_menit: parseFloat(document.getElementById('waktu_tempuh_menit').value),
+                kepadatan_lalu_lintas: parseInt(document.getElementById('kepadatan_lalu_lintas').value),
+                kondisi_jalan: parseInt(document.getElementById('kondisi_jalan').value),
+                kondisi_cuaca: parseInt(document.getElementById('kondisi_cuaca').value),
+                jenis_kendaraan: parseInt(document.getElementById('jenis_kendaraan').value),
+                berat_muatan_ton: parseFloat(document.getElementById('berat_muatan_ton').value)
+            };
+
+            try {
+                const response = await fetch('/api/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) throw new Error('Prediction failed');
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Display results
+                    document.getElementById('fuelPrediction').textContent = result.prediksi_bbm_liter.toFixed(1);
+                    document.getElementById('efficiency').textContent = result.efisiensi_km_per_liter.toFixed(2) + ' km/L';
+                    document.getElementById('fuelCost').textContent = 'Rp ' + result.biaya_bbm_rp.toLocaleString('id-ID');
+                    document.getElementById('timeCost').textContent = 'Rp ' + result.biaya_waktu_rp.toLocaleString('id-ID');
+                    document.getElementById('totalCost').textContent = 'Rp ' + result.total_biaya_rp.toLocaleString('id-ID');
+                    document.getElementById('modelBadge').textContent = result.model_used;
+                    document.getElementById('accuracy').textContent = result.model_accuracy;
+
+                    // Show result card
+                    document.getElementById('loadingState').style.display = 'none';
+                    document.getElementById('resultCard').style.display = 'block';
+
+                    // Scroll to result
+                    document.getElementById('resultCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                } else {
+                    throw new Error(result.error || 'Unknown error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat melakukan prediksi: ' + error.message);
+            } finally {
+                // Remove toast
+                const t = document.getElementById(toastId);
+                if (t) t.remove();
+            }
+        }
+
+        // Handle form submission
+        document.getElementById('routeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            document.getElementById('loadingState').style.display = 'block';
+            await calculateFuelPrediction();
+        });
+
+        // Event listener for route found
+        routingControl.on('routesfound', function (e) {
+            const routes = e.routes;
+            const summary = routes[0].summary;
+
+            // Convert to sensible units
+            const distanceKm = (summary.totalDistance / 1000).toFixed(1);
+            const timeMinutes = Math.round(summary.totalTime / 60);
+
+            // Update Form Inputs
+            document.getElementById('jarak_km').value = distanceKm;
+            document.getElementById('waktu_tempuh_menit').value = timeMinutes;
+
+            // Trigger visual feedback
+            const distanceInput = document.getElementById('jarak_km');
+            const timeInput = document.getElementById('waktu_tempuh_menit');
+
+            distanceInput.style.backgroundColor = 'rgba(78, 205, 196, 0.1)';
+            timeInput.style.backgroundColor = 'rgba(78, 205, 196, 0.1)';
+
+            setTimeout(() => {
+                distanceInput.style.backgroundColor = '';
+                timeInput.style.backgroundColor = '';
+            }, 500);
+
+            // AUTO-CALCULATE directly
+            calculateFuelPrediction();
+        });
+    </script>
+
+</body>
+
+</html>
