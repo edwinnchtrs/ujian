@@ -10,8 +10,6 @@
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -125,13 +123,33 @@
 
                     <div class="viz-grid">
                         <div class="viz-card">
-                            <h3><i class="fas fa-balance-scale"></i> Perbandingan Model (R² Score)</h3>
-                            <canvas id="modelChart"></canvas>
+                            <h3><i class="fas fa-chart-pie"></i> Distribusi Data</h3>
+                            <img src="/plots/data_distribution.png" alt="Data Distribution" class="viz-image">
                         </div>
 
                         <div class="viz-card">
-                            <h3><i class="fas fa-route"></i> Perbandingan Konsumsi BBM Rute</h3>
-                            <canvas id="routeChart"></canvas>
+                            <h3><i class="fas fa-fire"></i> Heatmap Korelasi</h3>
+                            <img src="/plots/correlation_heatmap.png" alt="Correlation Heatmap" class="viz-image">
+                        </div>
+
+                        <div class="viz-card">
+                            <h3><i class="fas fa-balance-scale"></i> Perbandingan Model</h3>
+                            <img src="/plots/model_comparison.png" alt="Model Comparison" class="viz-image">
+                        </div>
+
+                        <div class="viz-card">
+                            <h3><i class="fas fa-crosshairs"></i> Prediksi vs Aktual</h3>
+                            <img src="/plots/predictions_comparison.png" alt="Predictions Comparison" class="viz-image">
+                        </div>
+
+                        <div class="viz-card">
+                            <h3><i class="fas fa-star"></i> Feature Importance</h3>
+                            <img src="/plots/feature_importance.png" alt="Feature Importance" class="viz-image">
+                        </div>
+
+                        <div class="viz-card">
+                            <h3><i class="fas fa-route"></i> Perbandingan Rute</h3>
+                            <img src="/plots/route_comparison.png" alt="Route Comparison" class="viz-image">
                         </div>
                     </div>
                 </div>
@@ -262,10 +280,7 @@
                 if (routeResponse.ok) {
                     const routes = await routeResponse.json();
                     displayRoutes(routes);
-                    renderRouteChart(routes);
                 }
-
-                renderModelChart(modelData);
 
                 // Load savings analysis
                 const savingsResponse = await fetch('/api/savings');
@@ -335,64 +350,6 @@
             document.getElementById('worstRoute').textContent = savings.worst_route || 'N/A';
         }
 
-        function renderModelChart(modelData) {
-            const ctx = document.getElementById('modelChart').getContext('2d');
-            const labels = Object.keys(modelData.models || {});
-            const scores = labels.map(name => modelData.models[name].r2);
-
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'R² Score',
-                        data: scores,
-                        backgroundColor: scores.map(s => s >= 0.9 ? 'rgba(75, 192, 192, 0.6)' : 'rgba(54, 162, 235, 0.6)'),
-                        borderColor: scores.map(s => s >= 0.9 ? 'rgba(75, 192, 192, 1)' : 'rgba(54, 162, 235, 1)'),
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 1
-                        }
-                    }
-                }
-            });
-        }
-
-        function renderRouteChart(routes) {
-            const ctx = document.getElementById('routeChart').getContext('2d');
-            const labels = routes.map(r => r.rute);
-            const bbm = routes.map(r => r.prediksi_bbm_liter);
-
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Prediksi BBM (Liter)',
-                        data: bbm,
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        borderWidth: 2,
-                        tension: 0.1,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-        }
 
         // Load dashboard on page load
         window.addEventListener('DOMContentLoaded', loadDashboard);
