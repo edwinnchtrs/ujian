@@ -1,3 +1,12 @@
+---
+title: Ujian
+emoji: 🚀
+colorFrom: blue
+colorTo: green
+sdk: docker
+pinned: false
+---
+
 # 🚀 Fuel Optimization AI - Sistem Prediksi BBM Cerdas
 
 ## 📋 Deskripsi

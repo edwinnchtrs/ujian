@@ -514,7 +514,9 @@
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Responsive */
+/* Responsive Design - Mobile First Approach */
+
+/* Tablet Styles */
 @media (max-width: 900px) {
     .calculator-content {
         grid-template-columns: 1fr;
@@ -522,20 +524,322 @@
 
     .tips-grid {
         grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .potential-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .savings-calculator {
+        padding: 2rem;
+    }
+
+    .quiz-container {
+        padding: 2rem;
     }
 }
 
-@media (max-width: 600px) {
+/* Mobile Landscape & Small Tablets */
+@media (max-width: 768px) {
+    .tips-container {
+        padding-bottom: 3rem;
+    }
+
     .savings-potential {
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .savings-potential h2 {
+        font-size: 1.5rem;
+    }
+
+    .potential-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .potential-card {
         padding: 1.5rem;
     }
 
+    .potential-value {
+        font-size: 1.75rem;
+    }
+
+    .potential-label {
+        font-size: 0.85rem;
+    }
+
     .tips-categories {
-        zoom: 0.9;
+        gap: 0.75rem;
+        margin-bottom: 2rem;
+    }
+
+    .category-tab {
+        padding: 0.75rem 1.25rem;
+        font-size: 0.85rem;
+    }
+
+    .tips-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        margin-bottom: 3rem;
     }
 
     .tip-card {
         padding: 1.5rem;
+    }
+
+    .tip-card h3 {
+        font-size: 1.2rem;
+    }
+
+    .savings-calculator {
+        padding: 2rem;
+        margin-top: 3rem;
+    }
+
+    .savings-calculator h2 {
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .calculator-content {
+        gap: 2rem;
+    }
+
+    .quiz-container {
+        padding: 2rem;
+        min-height: 350px;
+    }
+
+    #qText {
+        font-size: 1.25rem;
+    }
+}
+
+/* Mobile Portrait */
+@media (max-width: 600px) {
+    .savings-potential {
+        padding: 1.5rem;
+        border-radius: 1.5rem;
+    }
+
+    .savings-potential h2 {
+        font-size: 1.25rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .potential-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .potential-card {
+        padding: 1.25rem;
+    }
+
+    .potential-icon {
+        font-size: 2rem;
+    }
+
+    .potential-value {
+        font-size: 1.5rem;
+    }
+
+    .tips-categories {
+        gap: 0.5rem;
+        justify-content: flex-start;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 0.5rem;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .category-tab {
+        padding: 0.65rem 1rem;
+        font-size: 0.8rem;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    .category-tab i {
+        font-size: 0.9rem;
+    }
+
+    .tip-card {
+        padding: 1.25rem;
+        border-radius: 1.25rem;
+    }
+
+    .tip-card h3 {
+        font-size: 1.1rem;
+    }
+
+    .tip-card p {
+        font-size: 0.9rem;
+    }
+
+    .tip-stats {
+        padding: 0.875rem 1rem;
+        gap: 0.5rem;
+    }
+
+    .tip-stats span {
+        font-size: 0.85rem;
+    }
+
+    .savings-calculator {
+        padding: 1.5rem;
+        border-radius: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .savings-calculator h2 {
+        font-size: 1.3rem;
+        margin-bottom: 1.5rem;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .calculator-result {
+        padding: 2rem;
+    }
+
+    .result-value {
+        font-size: 1.5rem;
+    }
+
+    .quiz-container {
+        padding: 1.5rem;
+        min-height: 300px;
+        border-radius: 1.5rem;
+    }
+
+    .quiz-container h2 {
+        font-size: 1.5rem;
+    }
+
+    .quiz-icon-large {
+        font-size: 3rem;
+    }
+
+    .quiz-options {
+        gap: 0.75rem;
+    }
+
+    .quiz-option {
+        padding: 1rem;
+        font-size: 0.95rem;
+    }
+
+    .score-circle {
+        width: 120px;
+        height: 120px;
+    }
+
+    .ai-advice {
+        padding: 1.25rem;
+    }
+}
+
+/* Small Mobile Devices */
+@media (max-width: 480px) {
+    .chatbot-widget {
+        bottom: 1rem;
+        right: 1rem;
+    }
+
+    .chat-toggle-btn {
+        width: 56px;
+        height: 56px;
+        font-size: 1.3rem;
+    }
+
+    .chat-window {
+        width: calc(100vw - 2rem);
+        height: calc(100vh - 120px);
+        bottom: 76px;
+        right: 0;
+        left: 1rem;
+    }
+
+    .potential-card {
+        padding: 1rem;
+    }
+
+    .potential-value {
+        font-size: 1.35rem;
+    }
+
+    .tip-header {
+        margin-bottom: 1rem;
+    }
+
+    .tip-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+    }
+
+    .tip-priority {
+        padding: 0.35rem 0.7rem;
+        font-size: 0.7rem;
+    }
+}
+
+/* Extra Small Mobile */
+@media (max-width: 360px) {
+    .savings-potential {
+        padding: 1.25rem;
+    }
+
+    .savings-potential h2 {
+        font-size: 1.1rem;
+    }
+
+    .potential-value {
+        font-size: 1.25rem;
+    }
+
+    .potential-label {
+        font-size: 0.75rem;
+    }
+
+    .category-tab {
+        padding: 0.5rem 0.85rem;
+        font-size: 0.75rem;
+    }
+
+    .tip-card {
+        padding: 1rem;
+    }
+
+    .tip-card h3 {
+        font-size: 1rem;
+    }
+
+    .tip-card p {
+        font-size: 0.85rem;
+        line-height: 1.5;
+    }
+
+    .savings-calculator {
+        padding: 1.25rem;
+    }
+
+    .savings-calculator h2 {
+        font-size: 1.15rem;
+    }
+
+    .quiz-container {
+        padding: 1.25rem;
+    }
+
+    .quiz-container h2 {
+        font-size: 1.25rem;
     }
 }
 
