@@ -805,25 +805,45 @@
             const encodedContent = encodeURIComponent(message);
             const apiUrl = `https://api.siputzx.my.id/api/ai/gpt3?prompt=${encodedPrompt}&content=${encodedContent}`;
 
+            // Mencoba API baru jika API lama mati
+            const alternativeApiUrl = `http://localhost:3000/api/ai/chatgpt?prompt=${encodedPrompt}&text=${encodedContent}`;
+
             try {
-                const response = await fetch(apiUrl);
-                if (!response.ok) throw new Error('Network response was not ok');
+                let response = await fetch(apiUrl);
+
+                // Jika API utama gagal, coba API alternatif yang diberikan user
+                if (!response.ok) {
+                    console.log("Primary API failed, trying alternative...");
+                    response = await fetch(alternativeApiUrl);
+                }
+
+                if (!response.ok) throw new Error('All API attempts failed');
 
                 const data = await response.json();
 
                 // Remove loading
                 document.getElementById(loadingId).remove();
 
-                // data.data is typical for this API structure based on similar free APIs, 
-                // but if it's raw JSON, we might need to adjust. 
-                // Assuming standard JSON response: { data: "response text" } or similar.
-                // Let's print to console to be safe during dev if needed, but for now map broadly.
-
-                const botReply = data.data || data.message || data.result || JSON.stringify(data);
+                // Handle data from either API
+                const botReply = data.data || data.message || data.result || (data.choices && data.choices[0].message.content) || JSON.stringify(data);
                 addMessage(botReply, 'bot');
 
             } catch (error) {
                 console.error('Error fetching AI response:', error);
+                // Attempt one last time directly with the alternative API if error caught during first fetch
+                try {
+                    const altResponse = await fetch(alternativeApiUrl);
+                    if (altResponse.ok) {
+                        const altData = await altResponse.json();
+                        document.getElementById(loadingId).remove();
+                        const botReply = altData.data || altData.message || altData.result || (altData.choices && altData.choices[0].message.content) || JSON.stringify(altData);
+                        addMessage(botReply, 'bot');
+                        return;
+                    }
+                } catch (altErr) {
+                    console.error('Alternative API also failed:', altErr);
+                }
+
                 document.getElementById(loadingId).remove();
                 addMessage("Maaf, koneksi ke FuelAI terputus. Silakan coba lagi nanti.", 'bot');
             }
@@ -831,7 +851,7 @@
 
         function parseMarkdown(text) {
             if (!text) return '';
-            
+
             // Configure marked options for security and style
             marked.use({
                 breaks: true,
